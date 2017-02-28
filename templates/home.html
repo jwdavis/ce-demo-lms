@@ -1,0 +1,109 @@
+{% extends 'master.html' %}
+{% block head %}
+    <!-- Bootstrap core CSS -->
+    <link href="/static/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/css/album.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+
+    <title>bdev2 home</title>
+{% endblock %}
+
+{% block content %}
+  <div "main">
+    <div class="collapse bg-inverse" id="navbarHeader">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-8 py-4">
+            <h4 class="text-white">About</h4>
+            <p class="text-muted">Inspired by the true story of Google's g2g program. Googlers teaching other Googlers accounts for >80% of all L&D activity within Google.</p>
+          </div>
+          <div class="col-sm-4 py-4">
+            <h4 class="text-white">Contact</h4>
+            <ul class="list-unstyled">
+              <li><a href="#" class="text-white">Follow on Twitter</a></li>
+              <li><a href="#" class="text-white">Like on Facebook</a></li>
+              <li><a href="#" class="text-white">Email team</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="navbar navbar-inverse bg-inverse">
+      <div class="container d-flex justify-content-between">
+        <a href="#" class="navbar-brand">bdev<sup>2</sup></a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarHeader" aria-controls="navbarHeader" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+      </div>
+    </div>
+
+    <section class="jumbotron text-center">
+      <div class="container">
+        <h1 class="jumbotron-heading">bdev<sup>2</sup></h1>
+        <p class="lead text-muted">Developers helping other developer become awesome.</p>
+        <p>
+          <a href="#" class="btn btn-primary" id="teach">Teach something</a>
+          <a href="#" class="btn btn-secondary">Learn something</a>
+        </p>
+      </div>
+    </section>
+
+    <div class="album text-muted" style="min-height:20rem">
+      <div class="container">
+
+        <div class="row">
+          <div class="card">
+            <div style="height:280px; width:292px; text-align:center">
+              <i class="material-icons" style="font-size:240px;margin-top:20px;">transform</i>
+            </div>
+            <p class="card-text" style="text-align:center"><a href="/paths">Browse all the learning paths</a></p>
+          </div>
+          <div class="card">
+            <div style="height:280px; width:292px; text-align:center">
+              <i class="material-icons" style="font-size:240px;margin-top:20px;">pages</i>
+            </div>
+            <p class="card-text" style="text-align:center"><a href="/modules">Browse all the microlearning modules</a></p>
+          </div>
+          <div class="card">
+            <div style="height:280px; width:292px; text-align:center">
+              <i class="material-icons" style="font-size:240px;margin-top:20px;">network_check</i>
+            </div>
+            <p class="card-text" style="text-align:center"><a href="/user/jeff">Review your learning activity</a></p>
+          </div>
+        </div>
+<p>© 2017 betterdev.io. served by <span class="alert alert-success" style="padding:5px">{{ instance_metadata.name }}</span> in <span class="alert alert-warning" style="padding:5px">{{ instance_metadata.zone }}</span></p>
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-muted">
+    <div class="container">
+    </div>
+  </footer>
+
+  <!-- Bootstrap core JavaScript
+  ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+  <script src="https://code.jquery.com/jquery-3.1.1.slim.min.js" integrity="sha384-A7FZj7v+d/sdmMqp/nOQwliLvUsJfDHW+k9Omg/a/EheAdgtzNs3hpfag6Ed950n" crossorigin="anonymous"></script>
+  <script>window.jQuery || document.write('<script src="/static/js/vendor/jquery.min.js"><\/script>')</script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb" crossorigin="anonymous"></script>
+  <script src="/static/js/vendor/holder.min.js"></script>
+  <script>
+    $(function () {
+      Holder.addTheme("thumb", { background: "#55595c", foreground: "#eceeef", text: "Thumbnail" });
+    });
+  </script>
+  <script src="/static/js/bootstrap.min.js"></script>
+  <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+  <script src="/static/js/ie10-viewport-bug-workaround.js"></script>
+
+  <script type="text/javascript">
+    document.getElementById("teach").onclick = function () {
+        location.href = "/module/add";
+    };
+</script>
+
+{% endblock %}

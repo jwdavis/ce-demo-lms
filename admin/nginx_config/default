@@ -10,27 +10,30 @@ server {
 	# set resolver
 	resolver 8.8.8.8 valid=300s;
 	resolver_timeout 10s;
+	client_max_body_size 500M;
 
 	#error_log /var/log/nginx/vc.error.log debug;
 	
-	# listen on 443
-	listen 443 ssl;
-
-	server_name vc.successops.com;
-	ssl_certificate /home/jeff/fullchain1.pem;
-	ssl_certificate_key /home/jeff/privkey1.pem;
+	# listen
+	listen 80 default_server;
 
 	# set root for static files
-	root /var/www/vc.successops.com/html;
-	index index.html index.htm index.nginx-debian.html;
+	# root /ce-demo-lms/static/html;
+	# index index.html index.htm index.nginx-debian.html;
+
+	location / {
+        proxy_pass http://localhost:8000;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+    }
 
 	# create location for static files
-	location / {
-		try_files $uri $uri/ =404;
+	location /static/ {
+		root /ce-demo-lms/;
 	}
 
 	# create location for gcs hosted media files
 	location ~* /gcs/([^/]*)$ {
-		proxy_pass https://storage.googleapis.com/raw_video_assets/$1;
+		proxy_pass https://storage.googleapis.com/<bucket>/$1;
 	}
 }

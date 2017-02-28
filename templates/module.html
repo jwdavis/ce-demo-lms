@@ -1,0 +1,50 @@
+{% extends 'master.html' %}
+{% block head %}
+    <title>{{ module.name }}</title>
+    <link href="/static/bs3_nj/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/bs3_nj/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <link href="/static/bs3_nj/jumbotron-narrow.css" rel="stylesheet">
+    <script src="/static/bs3_nj/ie-emulation-modes-warning.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+      <div class="header clearfix">
+        <a href='/'><h3 class="text-muted">bdev<sup>2</sup></h3></a>
+      </div>
+
+      <div class="jumbotron">
+        <h2>{{ module.name }}</h2>
+        <p class="lead">{{ module.description }}</p>
+          <video width="480" controls autoplay>
+            <source src="/gcs/{{ module.media }}" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
+      </div>
+
+      <div class="row marketing">
+        <div class="col-lg-12">
+          <h4>Overview</h4>
+          <p>Quick video hitting the highlights of the 1.3 revision</p>
+
+          <h4>Resources</h4>
+          <p>Visit <a href="https://https://jwdavis.me/cpo200-class">https://https://jwdavis.me/cpo200-class</a> for the current materials.</p>
+
+
+          <h4>Directions</h4>
+          <p>Watch the video, walk through slides, test the exercises</p>
+        </div>
+      </div>
+
+      <footer class="footer">
+        <p>© 2017 betterdev.io. served by <span class="alert alert-success" style="padding:5px">{{ instance_metadata.name }}</span> in <span class="alert alert-warning" style="padding:5px">{{ instance_metadata.zone }}</span></p>
+      </footer>
+
+    </div> <!-- /container -->
+
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="/static/bs3_nj/ie10-viewport-bug-workaround.js"></script>
+  
+
+{% endblock %}

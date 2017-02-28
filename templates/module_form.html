@@ -1,0 +1,64 @@
+{% extends 'master.html' %}
+{% block head %}
+    <title>New module</title>
+    <link href="/static/bs3_nj/bootstrap.min.css" rel="stylesheet">
+    <link href="/static/bs3_nj/ie10-viewport-bug-workaround.css" rel="stylesheet">
+    <link href="/static/bs3_nj/jumbotron-narrow.css" rel="stylesheet">
+    <script src="/static/bs3_nj/ie-emulation-modes-warning.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container">
+      <div class="header clearfix">
+        <a href='/'><h3 class="text-muted">bdev<sup>2</sup></h3></a>
+      </div>
+
+      <div class="jumbotron">
+        <h2>New module</h2>
+        <p class="lead">blurb goes here</p>
+        <form method="POST" enctype="multipart/form-data">
+              <div class="form-group">
+                <label for="title">Title</label>
+                <input type="text" name="title" id="title" value="" class="form-control"/>
+              </div>
+
+              <div class="form-group">
+                <label for="author">Author</label>
+                <input type="text" name="author" id="author" value="" class="form-control"/>
+              </div>
+<!-- 
+              <div class="form-group">
+                <label for="publishedDate">Date Published</label>
+                <input type="text" name="publishedDate" id="publishedDate" value="" class="form-control"/>
+              </div> -->
+
+              <div class="form-group">
+                <label for="description">Description</label>
+                <textarea name="description" id="description" class="form-control"></textarea>
+              </div>
+
+              <div class="form-group">
+                <label for="module_media">Media</label>
+                <input type="file" name="module_media" id="module_media" class="form-control"/>
+              </div>
+
+              <div class="form-group hidden">
+                <label for="media_url_dep">Module Video URL</label>
+                <input type="text" name="media_url_dep" id="media_url_dep" value="" class="form-control"/>
+              </div>
+
+                <button type="submit" class="btn btn-success">Save</button>
+        </form>
+      </div>
+            <footer class="footer">
+        <p>© 2017 betterdev.io. served by <span class="alert alert-success" style="padding:5px">{{ instance_metadata.name }}</span> in <span class="alert alert-warning" style="padding:5px">{{ instance_metadata.zone }}</span></p>
+      </footer>
+      
+    </div> <!-- /container -->
+
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="/static/bs3_nj/ie10-viewport-bug-workaround.js"></script>
+  
+
+{% endblock %}

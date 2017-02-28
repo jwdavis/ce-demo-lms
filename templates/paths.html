@@ -1,0 +1,129 @@
+{% extends 'master.html' %}
+{% block head %}
+
+    <title>bdev learning paths</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="/static/bs3_dash/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <link href="/static/bs3_dash/css/ie10-viewport-bug-workaround.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <link href="/static/bs3_dash/css/dashboard.css" rel="stylesheet">
+
+    <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
+    <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
+    <script src="/static/bs3_dash/js/ie-emulation-modes-warning.js"></script>
+
+
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+
+
+    <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+        <div class="navbar-header">
+          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+            <span class="sr-only">Toggle navigation</span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </button>
+          <a class="navbar-brand" href="/">bdev<sup>2</sup></a>
+        </div>
+        <div id="navbar" class="navbar-collapse collapse">
+          <form class="navbar-form navbar-right">
+            <input type="text" class="form-control" placeholder="Search...">
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-2 sidebar">
+          <ul class="nav nav-sidebar">
+            <li class="active"><a href="http://getbootstrap.com/examples/dashboard/#">Promoted <span class="sr-only">(current)</span></a></li>
+            <li><a href="http://getbootstrap.com/examples/dashboard/#">Popular</a></li>
+            <li><a href="http://getbootstrap.com/examples/dashboard/#">Coming soon</a></li>
+          </ul>
+        </div>
+        <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-2 main">
+          <h1 class="page-header">Featured Paths</h1>
+
+          <div class="row placeholders">
+            <div class="col-xs-6 col-sm-3 placeholder">
+              <div style="height:200px; width:200px; text-align:center">
+                <i class="material-icons" style="font-size:140px;margin-top:20px;">cloud_queue</i>
+              </div>
+              <h4>Cloud Master</h4>
+              <span class="text-muted">When it rains, it pours</span>
+            </div>
+            <div class="col-xs-6 col-sm-3 placeholder">
+              <div style="height:200px; width:200px; text-align:center">
+                <i class="material-icons" style="font-size:140px;margin-top:20px;">access_time</i>
+              </div>
+              <h4>Time Master</h4>
+              <span class="text-muted">The doctor is in</span>
+           </div>
+            <div class="col-xs-6 col-sm-3 placeholder">
+              <div style="height:200px; width:200px; text-align:center">
+                <i class="material-icons" style="font-size:140px;margin-top:20px;">vpn_key</i>
+              </div>
+              <h4>Key Master</h4>
+              <span class="text-muted">You ain't afraid of no ghosts</span>
+            </div>
+            <div class="col-xs-6 col-sm-3 placeholder">
+              <div style="height:200px; width:200px; text-align:center">
+                <i class="material-icons" style="font-size:140px;margin-top:20px;">accessibility</i>
+              </div>
+              <h4>Master and Commander</h4>
+              <span class="text-muted">'nuff said</span>
+            </div>
+          </div>
+
+          <h2 class="sub-header">All Paths</h2>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>id</th>
+                  <th>path name</th>
+                  <th>path description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for path in paths %}
+                <tr>
+                  <td>{{ path.id }}</td>
+                  <td><a href ="/path/{{ path.id }}">{{ path.name }}</a></td>
+                  <td>{{ path.description }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            
+<p>© 2017 betterdev.io. served by <span class="alert alert-success" style="padding:5px">{{ instance_metadata.name }}</span> in <span class="alert alert-warning" style="padding:5px">{{ instance_metadata.zone }}</span></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="/static/bs3_dash/js/jquery.min.js"></script>
+    <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
+    <script src="/static/bs3_dash/js/bootstrap.min.js"></script>
+    <!-- Just to make our placeholder images work. Don't actually copy the next line! -->
+    <script src="/static/bs3_dash/js/holder.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="/static/bs3_dash/js/ie10-viewport-bug-workaround.js"></script>
+  
+
+
+{% endblock %}
