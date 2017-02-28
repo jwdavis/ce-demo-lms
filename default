@@ -1,0 +1,26 @@
+##
+# You should look at the following URL's in order to grasp a solid understanding
+# of Nginx configuration files in order to fully unleash the power of Nginx.
+# http://wiki.nginx.org/Pitfalls
+# http://wiki.nginx.org/QuickStart
+# http://wiki.nginx.org/Configuration
+
+server {
+
+	# set server name
+	server_name _;
+
+	# listen on 80
+	listen 80 default_server;
+	listen [::]:80 default_server;
+	
+	# set root for static files
+	root /var/www/html;
+	index index.html index.htm index.nginx-debian.html;
+
+	# create location for static files
+	location / {
+		try_files $uri $uri/ =404;
+	}
+
+}
