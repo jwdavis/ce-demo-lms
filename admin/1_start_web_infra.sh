@@ -55,24 +55,6 @@ fi
 kill $(lsof -t -i:3306)
 ~/proxy/cloud_sql_proxy -instances=$DEVSHELL_PROJECT_ID:us-central1:lms-sql=tcp:3306 &
 
-# create the tables
-mysql -uroot -p$1 --host 127.0.0.1 -e "CREATE TABLE lms.users (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, email TINYTEXT, name TINYTEXT, title TINYTEXT);"
-mysql -uroot -p$1 --host 127.0.0.1 -e "CREATE TABLE lms.paths (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name TINYTEXT, description VARCHAR(500));"
-mysql -uroot -p$1 --host 127.0.0.1 -e "CREATE TABLE lms.modules (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name TINYTEXT, description VARCHAR(500), content LONGTEXT, media TINYTEXT);"
-
-# create the initial module rowscd 
-mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.modules (name, description, content, media) VALUES ("CPO200: Chapter 1","Chapter 1 video for v1.3 revision","https://googl.gl/t1z4f","ch1.mp4")'
-mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.modules (name, description, content, media) VALUES ("CPO200: Chapter 2","Chapter 2 video for v1.3 revision","https://googl.gl/t1z4f","ch2.mp4")'
-mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.modules (name, description, content, media) VALUES ("CPO200: Chapter 3","Chapter 3 video for v1.3 revision","https://googl.gl/t1z4f","ch3.mp4")'
-
-# create the initial path rows
-mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.paths (name, description) VALUES ("Cloud Master","Modules for mastering clouds")'
-mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.paths (name, description) VALUES ("Time Master","Modules for mastering Times")'
-mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.paths (name, description) VALUES ("Key Master","Modules for mastering Keys")'
-mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.paths (name, description) VALUES ("Master and Commander","Modules for mastering sailing")'
-mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.paths (name, description) VALUES ("Path not taken","Modules for getting lost")'
-mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.paths (name, description) VALUES ("Off the beaten path","Modules for being alone")'
-
 # create base vm for app server
 gcloud compute instances create clean-start-web \
 --zone us-central1-a \
@@ -97,3 +79,22 @@ do
 	--metadata startup-script="sudo apt-get update; sudo apt-get install apache2-utils -y" \
 	--tags=test
 done
+
+
+# create the tables
+mysql -uroot -p$1 --host 127.0.0.1 -e "CREATE TABLE lms.users (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, email TINYTEXT, name TINYTEXT, title TINYTEXT);"
+mysql -uroot -p$1 --host 127.0.0.1 -e "CREATE TABLE lms.paths (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name TINYTEXT, description VARCHAR(500));"
+mysql -uroot -p$1 --host 127.0.0.1 -e "CREATE TABLE lms.modules (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, name TINYTEXT, description VARCHAR(500), content LONGTEXT, media TINYTEXT);"
+
+# create the initial module rowscd 
+mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.modules (name, description, content, media) VALUES ("CPO200: Chapter 1","Chapter 1 video for v1.3 revision","https://googl.gl/t1z4f","ch1.mp4")'
+mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.modules (name, description, content, media) VALUES ("CPO200: Chapter 2","Chapter 2 video for v1.3 revision","https://googl.gl/t1z4f","ch2.mp4")'
+mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.modules (name, description, content, media) VALUES ("CPO200: Chapter 3","Chapter 3 video for v1.3 revision","https://googl.gl/t1z4f","ch3.mp4")'
+
+# create the initial path rows
+mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.paths (name, description) VALUES ("Cloud Master","Modules for mastering clouds")'
+mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.paths (name, description) VALUES ("Time Master","Modules for mastering Times")'
+mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.paths (name, description) VALUES ("Key Master","Modules for mastering Keys")'
+mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.paths (name, description) VALUES ("Master and Commander","Modules for mastering sailing")'
+mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.paths (name, description) VALUES ("Path not taken","Modules for getting lost")'
+mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.paths (name, description) VALUES ("Off the beaten path","Modules for being alone")'
