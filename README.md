@@ -7,11 +7,11 @@
 * In Cloud Shell, set up the first part of the infrastructure
 	* `cd ~`
 	* `git clone https://github.com/jwdavis/ce-demo-lms.git`
-	* `cd ~\ce-demo-lms/admin`
+	* `cd ~/ce-demo-lms/admin`
 	* `sh 1_start_web_infra.sh <sql_pass>` (sub preferred sql password)
+* In text editor, modify **2_begin_web_setup.txt** (sub preferred supervisor and sql password)
 * SSH into the **clean-start-web** instance to create the base webapp server image
 * In SSH window
-	* Modify **2_begin_web_setup.txt** (sub preferred supervisor and sql password)
 	* Copy/paste commands from **2_begin_web_setup.txt** into SSH window
 	* Close SSH window
 * In Cloud Shell, complete the infrastructure
