@@ -65,3 +65,25 @@ sh 1_start_web_infra.sh <sql_pass>
 * backend takes 30-60 seconds to kickoff
 * show new server spinning up
 * show cpu utilization in instance group
+
+### optional Stage 8 - build the whole thing from scratch
+* Tear down most existing infra with `sh 99_teardown.sh`
+* create new vm; allows access to all apis
+* SSH into the instance to create the base webapp server image. * In SSH window...
+	* Copy/paste commands from `2_begin_web_setup.txt` in lms repor into SSH window (substituting preferred supervisor and sql password)
+	* Close SSH window
+* Delete VM while keeping boot disk
+* Create image from boot disk
+* Create instance templte (include access to all apis)
+* Create 3 managed instances groups, one in each geo
+* Create an HTTP load balancer pointing at instances groups
+* Show font-end working
+* Create anoter vm
+* In SSH window...
+	* Copy/paste commands from `2_begin_web_setup.txt` in transcoding repo into SSH window (substituting preferred supervisor password)
+	* Close SSH window
+* Delete VM while keeping boot disk
+* Create image from boot disk
+* Create instance templte (include access to all apis)
+* Create managed instances group
+

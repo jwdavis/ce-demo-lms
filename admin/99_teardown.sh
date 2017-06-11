@@ -12,6 +12,6 @@ gcloud compute http-health-checks delete lms-web-health-check --quiet
 gcloud compute instance-templates delete lms-web-template --quiet
 gcloud compute images delete lms-web-image --quiet
 gcloud compute disks delete clean-start-web --zone us-central1-a --quiet
-gcloud sql instances patch lms-sql \
---activation-policy=NEVER \
+# gcloud sql instances patch lms-sql \
+# --activation-policy=NEVER \
 --quiet
