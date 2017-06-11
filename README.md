@@ -4,19 +4,17 @@
 
 ### LMS setup
 * Open GCP Cloud Shell with SDK pointed at demo project
-* In Cloud Shell, set up the first part of the infrastructure
+* In Cloud Shell, set up the first part of the infrastructure, substituting preferred sql password)
 ```
 cd ~
 git clone https://github.com/jwdavis/ce-demo-lms.git
 cd ~/ce-demo-lms/admin
 sh 1_start_web_infra.sh <sql_pass>
 ``` 
--- substitute preferred sql password)
-* In text editor, modify `2_begin_web_setup.txt`, substituting preferred supervisor and sql password
 * SSH into the `clean-start-web` instance to create the base webapp server image. In SSH window...
-	* Copy/paste commands from `2_begin_web_setup.txt` into SSH window
+	* Copy/paste commands from `2_begin_web_setup.txt` into SSH window (substituting preferred supervisor and sql password)
 	* Close SSH window
-* In Cloud Shell, complete the infrastructure by running script
+* In Cloud Shell, complete the infrastructure by running script:
 ```sh 4_finish_web_infra.sh```
 * Wait 60-90 seconds for load balancer to come online
 * Open browser pointed at load balancer IP and validate app is running
