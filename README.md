@@ -5,10 +5,12 @@
 ### LMS setup
 * Open GCP Cloud Shell with SDK pointed at demo project
 * In Cloud Shell, set up the first part of the infrastructure
-```cd ~
+```
+cd ~
 git clone https://github.com/jwdavis/ce-demo-lms.git
 cd ~/ce-demo-lms/admin
-sh 1_start_web_infra.sh <sql_pass>``` 
+sh 1_start_web_infra.sh <sql_pass>
+``` 
 -- substitute preferred sql password)
 * In text editor, modify `2_begin_web_setup.txt`, substituting preferred supervisor and sql password
 * SSH into the `clean-start-web` instance to create the base webapp server image. In SSH window...
