@@ -60,6 +60,8 @@ gcloud compute instances create clean-start-web \
 --zone us-central1-a \
 --machine-type n1-standard-1 \
 --no-boot-disk-auto-delete \
+--image "debian-8-jessie-v20170717" \
+--image-project "debian-cloud" \
 --scopes=\
 https://www.googleapis.com/auth/cloud.useraccounts.readonly,\
 https://www.googleapis.com/auth/devstorage.read_write,\
@@ -76,6 +78,8 @@ do
 	gcloud compute instances create test-$i \
 	--zone $i \
 	--machine-type n1-standard-1 \
+	--image "debian-8-jessie-v20170717" \
+	--image-project "debian-cloud" \
 	--metadata startup-script="sudo apt-get update; sudo apt-get install apache2-utils -y" \
 	--tags=test
 done
