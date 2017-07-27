@@ -4,9 +4,9 @@ gcloud compute forwarding-rules delete lms-global-forwarding-rule --global --qui
 gcloud compute target-http-proxies delete lms-http-proxy --quiet
 gcloud compute url-maps delete lms-http-lb --quiet
 gcloud compute backend-services delete lms-backend-service --global --quiet
-gcloud compute instance-groups managed delete apac-lms-web --zone asia-east1-a --quiet
-gcloud compute instance-groups managed delete emea-lms-web --zone europe-west1-b --quiet
-gcloud compute instance-groups managed delete us-lms-web --zone us-central1-a --quiet
+gcloud compute instance-groups managed delete lms-web-asia --zone asia-east1-a --quiet
+gcloud compute instance-groups managed delete lms-web-eu --zone europe-west1-b --quiet
+gcloud compute instance-groups managed delete lms-web-us --zone us-central1-a --quiet
 gcloud compute health-checks delete lms-lb-health-check --quiet
 gcloud compute http-health-checks delete lms-web-health-check --quiet
 gcloud compute instance-templates delete lms-web-template --quiet
