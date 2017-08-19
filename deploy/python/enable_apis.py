@@ -12,16 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from google.cloud import pubsub
+def GenerateConfig(context):
 
-# publish message to topic
-def publish(topic,message,uri):
-	client = pubsub.Client()
-	topic = client.topic(topic)
-	return topic.publish(message,uri=uri)
+	project_id = context.env['project']
+	billing_account = context.properties['billing_account']
 
-# stuff queue
-def stuff_queue(topic):
-	client = pubsub.Client()
-	topic = client.topic(topic)
-	return topic.publish(b'stuffing queue',uri='q_stuffing')
+	resources = []
+
+	for api in context.properties['apis']:
+		resources.append(
+			{
+				'name': api,
+				'type':	'deploymentmanager.v2.virtual.enableService',
+				'properties': {
+					'consumerId': 'project:{}'.format(project_id),
+					'serviceName': api
+				}
+			})
+
+	return {'resources': resources}

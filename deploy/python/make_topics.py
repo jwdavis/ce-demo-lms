@@ -11,17 +11,28 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+#from google.cloud import logging
 
-from google.cloud import pubsub
+def GenerateConfig(context):
 
-# publish message to topic
-def publish(topic,message,uri):
-	client = pubsub.Client()
-	topic = client.topic(topic)
-	return topic.publish(message,uri=uri)
+	project = context.env['project']
+	project_number = context.env['project_number']
 
-# stuff queue
-def stuff_queue(topic):
-	client = pubsub.Client()
-	topic = client.topic(topic)
-	return topic.publish(b'stuffing queue',uri='q_stuffing')
+	resources = []
+
+	for topic_name in context.properties['topic_names']:
+		resource = {
+			'name':	topic_name,
+			'type':	'pubsub.v1.topic',
+			'properties':	{
+				'name': topic_name,
+				'topic': topic_name
+			}
+		}
+		if context.properties['wait_for_api']:
+			resource['metadata'] = {}
+			resource['metadata']['dependsOn'] = ['pubsub.googleapis.com']
+
+		resources.append(resource)
+
+	return {'resources': resources}

@@ -12,7 +12,7 @@ gunicorn \
 python-dev \
 libmysqlclient-dev \
 python-mysqldb \
-supervisor 
+supervisor
 
 # setup virtual environment for app
 mkdir /venvs
@@ -27,7 +27,7 @@ google-cloud==0.23.0 \
 requests
 
 # setup config file for app
-sed -i -e "s/<sql_pass>/$2/g" /ce-demo-lms/config.py
+sed -i -e "s/<sql_pass>/$1/g" /ce-demo-lms/config.py
 
 # config nginx
 sed -i -e "s/<bucket>/bdev2_raw_media_$PROJECT_ID/g" /ce-demo-lms/admin/nginx_config/default
@@ -42,7 +42,7 @@ sudo mv cloud_sql_proxy.linux.amd64 /proxy/cloud_sql_proxy; \
 sudo chmod +x /proxy/cloud_sql_proxy
 
 # config supervisor
-sed -i -e "s/<supervisor_pass>/$1/g" /ce-demo-lms/admin/supervisor_config/supervisord.conf
+sed -i -e "s/<supervisor_pass>/$2/g" /ce-demo-lms/admin/supervisor_config/supervisord.conf
 cp /ce-demo-lms/admin/supervisor_config/supervisord.conf /etc/supervisor/.
 cp /ce-demo-lms/admin/supervisor_config/lms.conf /etc/supervisor/conf.d/.
 sed -i -e "s/<project-id>/$PROJECT_ID/g" /ce-demo-lms/admin/supervisor_config/proxy.conf
