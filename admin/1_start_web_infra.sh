@@ -1,7 +1,7 @@
  #!/bin/bash
 
 # enable apis
-gcloud service-management enable compute-component.googleapis.com
+gcloud service-management enable compute.googleapis.com
 gcloud service-management enable sqladmin.googleapis.com
 gcloud service-management enable pubsub.googleapis.com 
 
@@ -27,10 +27,8 @@ gcloud beta pubsub subscriptions create file_ready \
 
 # create cloud sql instance
 gcloud sql instances create lms-sql \
---activation-policy=ALWAYS \
---database-version="MYSQL_5_6" \
---gce-zone=us-central1-a \
 --tier=db-n1-standard-1 \
+--activation-policy=ALWAYS \
 --quiet
 
 # set the root user password
