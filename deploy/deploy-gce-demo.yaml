@@ -22,9 +22,9 @@ imports:
 - path: python/make_custom_network.py
   name: make_custom_network.py
 - path: python/make_fw_rules.py
+  name: make_fw_rules.py
 - path: python/make_static_ips.py
   name: make_static_ips.py
-  name: make_fw_rules.py
 - path: python/make_topics.py
   name: make_topics.py
 - path: python/make_subscriptions.py
@@ -35,12 +35,10 @@ imports:
   name: make_databases.py
 - path: python/make_vms.py
   name: make_vms.py
-
 - path: python/make_templates.py
   name: make_templates.py
 - path: python/make_migs.py
   name: make_migs.py
-
 - path: python/make_health_checks.py
   name: make_health_checks.py
 - path: python/make_backend_services.py
@@ -314,6 +312,7 @@ resources:
           cd /
           git clone https://github.com/jwdavis/ce-demo-lms.git
           cd ce-demo-lms
+          git checkout deployment_manager
           chmod u+x /ce-demo-lms/admin/finish_transcode_setup.sh
           /ce-demo-lms/admin/finish_transcode_setup.sh {}
           touch /initialized.txt
