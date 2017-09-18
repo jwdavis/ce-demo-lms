@@ -12,8 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-# git checkout
-
 imports:
 - path: python/enable_apis.py
   name: enable_apis.py
@@ -215,7 +213,6 @@ resources:
           cd /
           git clone https://github.com/jwdavis/ce-demo-lms.git
           cd ce-demo-lms
-          git checkout deployment_manager
           chmod u+x /ce-demo-lms/admin/finish_web_setup.sh
           /ce-demo-lms/admin/finish_web_setup.sh {} {}
           touch /initialized.txt
@@ -248,7 +245,6 @@ resources:
           cd /
           git clone https://github.com/jwdavis/ce-demo-lms.git
           cd ce-demo-lms
-          git checkout deployment_manager
           chmod u+x /ce-demo-lms/admin/finish_web_setup.sh
           /ce-demo-lms/admin/finish_web_setup.sh {} {}
           touch /initialized.txt
@@ -281,7 +277,6 @@ resources:
           cd /
           git clone https://github.com/jwdavis/ce-demo-lms.git
           cd ce-demo-lms
-          git checkout deployment_manager
           chmod u+x /ce-demo-lms/admin/finish_web_setup.sh
           /ce-demo-lms/admin/finish_web_setup.sh {} {}
           touch /initialized.txt
@@ -312,7 +307,6 @@ resources:
           cd /
           git clone https://github.com/jwdavis/ce-demo-lms.git
           cd ce-demo-lms
-          git checkout deployment_manager
           chmod u+x /ce-demo-lms/admin/finish_transcode_setup.sh
           /ce-demo-lms/admin/finish_transcode_setup.sh {}
           touch /initialized.txt
