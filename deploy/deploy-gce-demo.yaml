@@ -1,0 +1,443 @@
+# Copyright 2017 SuccessOps, LLC All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+imports:
+- path: python/enable_apis.py
+  name: enable_apis.py
+- path: python/make_public_buckets.py
+  name: make_public_buckets.py
+- path: python/make_custom_network.py
+  name: make_custom_network.py
+- path: python/make_fw_rules.py
+  name: make_fw_rules.py
+- path: python/make_static_ips.py
+  name: make_static_ips.py
+- path: python/make_topics.py
+  name: make_topics.py
+- path: python/make_subscriptions.py
+  name: make_subscriptions.py
+- path: python/make_sql_instance.py
+  name: make_sql_instance.py
+- path: python/make_databases.py
+  name: make_databases.py
+- path: python/make_vms.py
+  name: make_vms.py
+- path: python/make_templates.py
+  name: make_templates.py
+- path: python/make_migs.py
+  name: make_migs.py
+- path: python/make_health_checks.py
+  name: make_health_checks.py
+- path: python/make_backend_services.py
+  name: make_backend_services.py
+- path: python/make_url_maps.py
+  name: make_url_maps.py
+- path: python/make_target_proxies.py
+  name: make_target_proxies.py
+- path: python/make_gfrs.py
+  name: make_gfrs.py
+
+resources:
+
+# last check on names and stuff
+# squash commits
+# push to master
+# collapse to one repo
+- name: apis
+  type: enable_apis.py
+  properties:
+    billing_account: billingAccounts/009B48-88CB34-9296BE
+    apis:
+      - compute.googleapis.com
+      - sqladmin.googleapis.com
+      - pubsub.googleapis.com
+
+- name: buckets
+  type: make_public_buckets.py
+  properties:
+    prefixes:
+    - bdev2_raw_media
+    - bdev2_media
+    storageClass: MULTI_REGIONAL
+    location: US
+
+- name: network
+  type: make_custom_network.py
+  properties:
+    net_name: lms-network
+    subnet_names:
+    - lms-us-sub
+    - lms-eu-sub
+    - lms-asia-sub
+    subnet_regions:
+    - us-central1
+    - europe-west1
+    - asia-east1
+    subnet_ranges:
+    - 192.168.1.0/24
+    - 192.168.2.0/24
+    - 192.168.3.0/24
+
+- name: static_ips
+  type: make_static_ips.py
+  properties:
+    ips:
+    - ip1:
+      name: lms-demo-ip
+
+- name: fw-rules
+  type: make_fw_rules.py
+  properties:
+    rules:
+    - fw1:
+      network: $(ref.lms-network.selfLink)
+      source_ranges:
+      - 0.0.0.0/0
+      allowed:
+      - p1:
+        IPProtocol: TCP
+        ports:
+        - 22
+      name: lms-network-ssh
+    - fw2:
+      network: $(ref.lms-network.selfLink)
+      target_tags:
+      - webapp
+      source_ranges:
+      - 0.0.0.0/0
+      allowed:
+      - p1:
+        IPProtocol: TCP
+        ports:
+        - 80
+      name: lms-network-http
+
+- name: topics
+  type: make_topics.py
+  properties:
+    topic_names:
+    - video_to_transcode
+    wait_for_api: true
+
+- name: subscriptions
+  type: make_subscriptions.py
+  properties:
+    sub-names:
+    - file_ready
+    sub-subscriptions:
+    - file_ready
+    topics:
+    - video_to_transcode
+    ack_deadlines:
+    - 30
+
+- name: sql_instance
+  type: make_sql_instance.py
+  properties:
+    name: lms-sql
+    region: us-central1
+    tier: db-n1-standard-1
+    activationPolicy: ALWAYS
+    wait_for_api: true
+
+- name: sql_databases
+  type: make_databases.py
+  properties:
+    db_names:
+    - lms
+    instance: lms-sql
+
+- name: vms
+  type: make_vms.py
+  properties:
+    vms:
+    - vm1:
+      name: test-us
+      zone: us-central1-a
+      machine-type: n1-standard-1
+      network: $(ref.lms-network.selfLink)
+      subnet: $(ref.lms-us-sub.selfLink)
+      startup: sudo apt-get update; sudo apt-get install apache2-utils -y
+    - vm2:
+      name: test-eu
+      zone: europe-west1-b
+      machine-type: n1-standard-1
+      network: $(ref.lms-network.selfLink)
+      subnet: $(ref.lms-eu-sub.selfLink)
+      startup: sudo apt-get update; sudo apt-get install apache2-utils -y
+    - vm3:
+      name: test-asia
+      zone: asia-east1-a
+      machine-type: n1-standard-1
+      network: $(ref.lms-network.selfLink)
+      subnet: $(ref.lms-asia-sub.selfLink)
+      startup: sudo apt-get update; sudo apt-get install apache2-utils -y
+
+- name: templates
+  type: make_templates.py
+  properties:
+    templates:
+    - t1:
+      machine-type: n1-standard-1
+      network: $(ref.lms-network.selfLink)
+      subnet: $(ref.lms-us-sub.selfLink)
+      name: lms-web-us-template
+      tags:
+      - webapp
+      scopes:
+      - https://www.googleapis.com/auth/compute.readonly
+      - https://www.googleapis.com/auth/cloud.useraccounts.readonly
+      - https://www.googleapis.com/auth/devstorage.read_write
+      - https://www.googleapis.com/auth/logging.write
+      - https://www.googleapis.com/auth/monitoring.write
+      - https://www.googleapis.com/auth/service.management.readonly
+      - https://www.googleapis.com/auth/servicecontrol
+      - https://www.googleapis.com/auth/pubsub
+      - https://www.googleapis.com/auth/sqlservice.admin
+      startup-script: |
+        #!/bin/bash
+        if [ ! -f /initialized.txt ]; then
+          apt-get update
+          apt-get install -y git
+          cd /
+          git clone https://github.com/jwdavis/ce-demo-lms.git
+          cd ce-demo-lms
+          chmod u+x /ce-demo-lms/admin/finish_web_setup.sh
+          /ce-demo-lms/admin/finish_web_setup.sh {} {}
+          touch /initialized.txt
+        fi
+      script_args:
+      - <sql-pass>
+      - <sup-pass>
+    - t2:
+      machine-type: n1-standard-1
+      network: $(ref.lms-network.selfLink)
+      subnet: $(ref.lms-eu-sub.selfLink)
+      name: lms-web-eu-template
+      tags:
+      - webapp
+      scopes:
+      - https://www.googleapis.com/auth/compute.readonly
+      - https://www.googleapis.com/auth/cloud.useraccounts.readonly
+      - https://www.googleapis.com/auth/devstorage.read_write
+      - https://www.googleapis.com/auth/logging.write
+      - https://www.googleapis.com/auth/monitoring.write
+      - https://www.googleapis.com/auth/service.management.readonly
+      - https://www.googleapis.com/auth/servicecontrol
+      - https://www.googleapis.com/auth/pubsub
+      - https://www.googleapis.com/auth/sqlservice.admin
+      startup-script: |
+        #!/bin/bash
+        if [ ! -f /initialized.txt ]; then
+          apt-get update
+          apt-get install -y git
+          cd /
+          git clone https://github.com/jwdavis/ce-demo-lms.git
+          cd ce-demo-lms
+          chmod u+x /ce-demo-lms/admin/finish_web_setup.sh
+          /ce-demo-lms/admin/finish_web_setup.sh {} {}
+          touch /initialized.txt
+        fi
+      script_args:
+      - <sql-pass>
+      - <sup-pass>
+    - t3:
+      machine-type: n1-standard-1
+      network: $(ref.lms-network.selfLink)
+      subnet: $(ref.lms-asia-sub.selfLink)
+      name: lms-web-asia-template
+      tags:
+      - webapp
+      scopes:
+      - https://www.googleapis.com/auth/compute.readonly
+      - https://www.googleapis.com/auth/cloud.useraccounts.readonly
+      - https://www.googleapis.com/auth/devstorage.read_write
+      - https://www.googleapis.com/auth/logging.write
+      - https://www.googleapis.com/auth/monitoring.write
+      - https://www.googleapis.com/auth/service.management.readonly
+      - https://www.googleapis.com/auth/servicecontrol
+      - https://www.googleapis.com/auth/pubsub
+      - https://www.googleapis.com/auth/sqlservice.admin
+      startup-script: |
+        #!/bin/bash
+        if [ ! -f /initialized.txt ]; then
+          apt-get update
+          apt-get install -y git
+          cd /
+          git clone https://github.com/jwdavis/ce-demo-lms.git
+          cd ce-demo-lms
+          chmod u+x /ce-demo-lms/admin/finish_web_setup.sh
+          /ce-demo-lms/admin/finish_web_setup.sh {} {}
+          touch /initialized.txt
+        fi
+      script_args:
+      - <sql-pass>
+      - <sup-pass>
+    - t4:
+      machine-type: n1-standard-1
+      network: $(ref.lms-network.selfLink)
+      subnet: $(ref.lms-us-sub.selfLink)
+      name: lms-transcode-template
+      tags:
+      - transcode
+      scopes:
+      - https://www.googleapis.com/auth/cloud.useraccounts.readonly
+      - https://www.googleapis.com/auth/devstorage.full_control
+      - https://www.googleapis.com/auth/logging.write
+      - https://www.googleapis.com/auth/monitoring.write
+      - https://www.googleapis.com/auth/service.management.readonly
+      - https://www.googleapis.com/auth/servicecontrol
+      - https://www.googleapis.com/auth/pubsub
+      startup-script: |
+        #!/bin/bash
+        if [ ! -f /initialized.txt ]; then
+          apt-get update
+          apt-get install -y git
+          cd /
+          git clone https://github.com/jwdavis/ce-demo-lms.git
+          cd ce-demo-lms
+          chmod u+x /ce-demo-lms/admin/finish_transcode_setup.sh
+          /ce-demo-lms/admin/finish_transcode_setup.sh {}
+          touch /initialized.txt
+        fi
+      script_args:
+      - <sup-pass>
+
+- name: migs
+  type: make_migs.py
+  properties:
+    migs:
+    - mig_us:
+      name: lms-web-us
+      region: us-central1
+      template: $(ref.lms-web-us-template.selfLink)
+      size: 1
+      zone: us-central1-a
+      base: lms-us
+      autoscaler:
+        min: 1
+        max: 5
+        cool: 90
+        util: .8
+        criteria: load_balancer
+    - mig-eu:
+      name: lms-web-eu
+      region: europe-west1
+      template: $(ref.lms-web-eu-template.selfLink)
+      size: 1
+      zone: europe-west1-b
+      base: lms-eu
+      autoscaler:
+        min: 1
+        max: 5
+        cool: 90
+        util: .8
+        criteria: load_balancer
+    - mig-asia:
+      name: lms-web-asia
+      region: asia-east1
+      template: $(ref.lms-web-asia-template.selfLink)
+      size: 1
+      zone: asia-east1-a
+      base: lms-asia
+      autoscaler:
+        min: 1
+        max: 5
+        cool: 90
+        util: .8
+        criteria: load_balancer
+    - mig-transcode:
+      name: lms-transcode
+      region: us-central1-a
+      template: $(ref.lms-transcode-template.selfLink)
+      size: 1
+      zone: us-central1-a
+      base: lms-transcode
+      autoscaler:
+        min: 1
+        max: 5
+        cool: 120
+        util: .7
+        criteria: cpu
+
+- name: health-checks
+  type: make_health_checks.py
+  properties:
+    checks:
+    - check1:
+      name: lms-health-check
+      ht: 1
+      uht: 2
+      timeout: 5
+      port: 80
+      interval: 5
+
+- name: backend-services
+  type: make_backend_services.py
+  properties:
+    backend-services:
+    - backend_service-1:
+      name: lms-backend-service
+      health-checks:
+      - lms-health-check
+      backends:
+      - backend-1:
+        name: lms-web-us-backend
+        mode: UTILIZATION
+        maxUtilization: 0.8
+        maxRatePerInstance: 30
+        capacityScaler: 1
+        group: lms-web-us
+      - backend-2:
+        name: lms-web-eu-backend
+        mode: UTILIZATION
+        maxUtilization: 0.8
+        maxRatePerInstance: 30
+        capacityScaler: 1
+        group: lms-web-eu
+      - backend-3:
+        name: lms-web-asia-backend
+        mode: UTILIZATION
+        maxUtilization: 0.8
+        maxRatePerInstance: 30
+        capacityScaler: 1
+        group: lms-web-asia
+
+- name: maps
+  type: make_url_maps.py
+  properties:
+    url_maps:
+    - map1:
+      name: lms-demo-lb
+      service: lms-backend-service
+
+
+- name: proxies
+  type: make_target_proxies.py
+  properties:
+    proxies:
+    - proxy1:
+      name: lms-demo-proxy
+      map: lms-demo-lb
+
+- name: gfrs
+  type: make_gfrs.py
+  properties:
+    gfrs:
+    - gfr1:
+      name: lms-demo-gfr
+      address: lms-demo-ip
+      target: $(ref.lms-demo-proxy.selfLink)
+      ports:
+      - 80

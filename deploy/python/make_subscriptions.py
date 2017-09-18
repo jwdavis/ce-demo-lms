@@ -12,16 +12,25 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from google.cloud import pubsub
+def GenerateConfig(context):
 
-# publish message to topic
-def publish(topic,message,uri):
-	client = pubsub.Client()
-	topic = client.topic(topic)
-	return topic.publish(message,uri=uri)
+	project = context.env['project']
+	project_number = context.env['project_number']
 
-# stuff queue
-def stuff_queue(topic):
-	client = pubsub.Client()
-	topic = client.topic(topic)
-	return topic.publish(b'stuffing queue',uri='q_stuffing')
+	resources = []
+
+	for sub in range(0,len(context.properties['sub-names'])):
+		sub_name = context.properties['sub-names'][sub]
+		topic_name = context.properties['topics'][sub]
+		resources.append({
+			'name':			sub_name,
+			'type':			'pubsub.v1.subscription',
+			'properties':	{
+				'name': sub_name,
+				'subscription': sub_name,
+				'topic': '$(ref.{}.name)'.format(topic_name),
+				'ackDeadlineSeconds': 30
+			}
+		})
+
+	return {'resources': resources}

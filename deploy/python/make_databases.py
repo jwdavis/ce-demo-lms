@@ -12,16 +12,28 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from google.cloud import pubsub
+def GenerateConfig(context):
 
-# publish message to topic
-def publish(topic,message,uri):
-	client = pubsub.Client()
-	topic = client.topic(topic)
-	return topic.publish(message,uri=uri)
+	project = context.env['project']
+	project_number = context.env['project_number']
 
-# stuff queue
-def stuff_queue(topic):
-	client = pubsub.Client()
-	topic = client.topic(topic)
-	return topic.publish(b'stuffing queue',uri='q_stuffing')
+	instance = context.properties['instance']
+
+	resources = []
+
+	for db in context.properties['db_names']:
+		resources.append(
+			{
+				'name': db,
+				'type':	'sqladmin.v1beta4.database',
+				'metadata':{
+					'dependsOn': [instance]
+				},
+				'properties': {
+					'name': db,
+					'project': project,
+					'instance': instance
+				}
+			})
+
+	return {'resources': resources}

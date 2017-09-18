@@ -1,15 +1,16 @@
-"""
-Copyright SuccessOps, LLC 2017
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at
-http://www.apache.org/licenses/LICENSE-2.0
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-"""
+# Copyright 2017 SuccessOps, LLC All rights reserved.
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
 
 from flask import Flask
 from flask import request, redirect, render_template, url_for
@@ -62,13 +63,13 @@ def show_modules():
         modules.append(row_obj)
     return render_template('modules.html', modules=modules, instance_metadata=INSTANCE_METADATA)
 
-# add new module    
+# add new module
 @app.route('/messages/send', methods=['GET'])
 def send_message():
     pubsub.publish(TOPIC,b'file submitted','ch1.mp4')
     return 'message sent'
 
-# add new module    
+# add new module
 @app.route('/module/add', methods=['GET','POST'])
 def create_module():
     if request.method == 'POST':
@@ -127,7 +128,6 @@ def show_path(path_name):
     return render_template('path.html')
 
 ### users ###
-
 # show user profile
 @app.route('/user/<user_name>')
 def show_user(user_name):
