@@ -14,30 +14,30 @@
 
 def GenerateConfig(context):
 
-	project = context.env['project']
-	project_number = context.env['project_number']
+    project = context.env['project']
+    project_number = context.env['project_number']
 
-	resources = []
+    resources = []
 
-	resources.append(
-		{
-			'name': context.properties['net_name'],
-			'type':	'compute.v1.network',
-			'properties': {
-				'autoCreateSubnetworks': False
-			}
-		})
+    resources.append(
+        {
+            'name': context.properties['net_name'],
+            'type': 'compute.v1.network',
+            'properties': {
+                'autoCreateSubnetworks': False
+            }
+        })
 
-	for sub_num in range(0,len(context.properties['subnet_names'])):
-		resources.append(
-			{
-				'name': '{}'.format(context.properties['subnet_names'][sub_num]),
-				'type':	'compute.v1.subnetwork',
-				'properties': {
-    				'network': 		'$(ref.{}.selfLink)'.format(context.properties['net_name']),
-					'ipCidrRange':	context.properties['subnet_ranges'][sub_num],
-					'region':		context.properties['subnet_regions'][sub_num]
-				}
-			})
+    for sub_num in range(0,len(context.properties['subnet_names'])):
+        resources.append(
+        {
+            'name': '{}'.format(context.properties['subnet_names'][sub_num]),
+            'type': 'compute.v1.subnetwork',
+            'properties': {
+                'network': '$(ref.{}.selfLink)'.format(context.properties['net_name']),
+                'ipCidrRange': context.properties['subnet_ranges'][sub_num],
+                'region': context.properties['subnet_regions'][sub_num]
+            }
+        })
 
-	return {'resources': resources}
+    return {'resources': resources}
