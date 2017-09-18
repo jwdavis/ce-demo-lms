@@ -4,24 +4,15 @@
 
 ### LMS setup
 * Open GCP Cloud Shell with SDK pointed at demo project
-* In Cloud Shell, set up the first part of the infrastructure, substituting preferred sql password)
+* In Cloud Shell, run the deployment, providing preferred passwords for SQL and Supervisor
 ```
 cd ~
 git clone https://github.com/jwdavis/ce-demo-lms.git
-cd ~/ce-demo-lms/admin
-sh 1_start_web_infra.sh <sql_pass>
+cd ~/ce-demo-lms/deploy
+. ./start_deployment.sh <sql_pass> <supervisor_pass>
 ```
-* SSH into the `clean-start-web` instance to create the base webapp server image. In SSH window...
-	* Copy/paste commands from `2_begin_web_setup.txt` into SSH window (substituting preferred supervisor and sql password)
-	* Close SSH window
-* In Cloud Shell, complete the infrastructure by running script:
-```sh 4_finish_web_infra.sh```
 * Wait 60-90 seconds for load balancer to come online
 * Open browser pointed at load balancer IP and validate app is running
-
-### Transcoding setup
-
-* See instruction in ce-demo-lms repo
 
 # Demo instructions
 
@@ -32,8 +23,8 @@ sh 1_start_web_infra.sh <sql_pass>
 * show create module - don't actually create module
 
 ### Stage 2 - Show architecture
-* use diagram in the presenation
-* walk them through
+![Architecture diagram](./arch.png)
+* walk them through diagram
 * point out pub/sub is there if you want
 
 ### Stage 3 - Show load balancer
@@ -67,23 +58,3 @@ sh 1_start_web_infra.sh <sql_pass>
 * show cpu utilization in instance group
 
 ### optional Stage 8 - build the whole thing from scratch
-* Tear down most existing infra with `sh 99_teardown.sh`
-* create new vm; allows access to all apis
-* SSH into the instance to create the base webapp server image. * In SSH window...
-	* Copy/paste commands from `2_begin_web_setup.txt` in lms repor into SSH window (substituting preferred supervisor and sql password)
-	* Close SSH window
-* Delete VM while keeping boot disk
-* Create image from boot disk
-* Create instance templte (include access to all apis)
-* Create 3 managed instances groups, one in each geo
-* Create an HTTP load balancer pointing at instances groups
-* Show font-end working
-* Create anoter vm
-* In SSH window...
-	* Copy/paste commands from `2_begin_web_setup.txt` in transcoding repo into SSH window (substituting preferred supervisor password)
-	* Close SSH window
-* Delete VM while keeping boot disk
-* Create image from boot disk
-* Create instance templte (include access to all apis)
-* Create managed instances group
-
