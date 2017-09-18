@@ -25,7 +25,6 @@ fi
 kill $(lsof -t -i:3306)
 ~/proxy/cloud_sql_proxy -instances=$DEVSHELL_PROJECT_ID:us-central1:lms-sql=tcp:3306 &
 
-
 gcloud beta sql users set-password root % \
 --instance=lms-sql \
 --password=$1
