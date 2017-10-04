@@ -32,7 +32,7 @@ def GenerateConfig(context):
         'balancingMode': backend['mode'],
         'capacityScaler': backend['capacityScaler'],
         'group': temp,
-        'maRatePerInstance': backend['maxRatePerInstance'],
+        'maxRatePerInstance': backend['maxRatePerInstance'],
         'maxUtilization': backend['maxUtilization'],
       })
 
