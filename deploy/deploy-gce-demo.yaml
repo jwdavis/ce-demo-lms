@@ -59,8 +59,6 @@ resources:
   properties:
     billing_account: billingAccounts/009B48-88CB34-9296BE
     apis:
-      - compute.googleapis.com
-      - sqladmin.googleapis.com
       - pubsub.googleapis.com
 
 - name: buckets
