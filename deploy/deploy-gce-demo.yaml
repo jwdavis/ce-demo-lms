@@ -149,7 +149,7 @@ resources:
     region: us-central1
     tier: db-n1-standard-1
     activationPolicy: ALWAYS
-    wait_for_api: false
+    wait_for_api: true
 
 - name: sql_databases
   type: make_databases.py

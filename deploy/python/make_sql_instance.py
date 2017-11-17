@@ -32,5 +32,6 @@ def GenerateConfig(context):
 	if context.properties['wait_for_api']:
 		resource['metadata'] = {}
 		resource['metadata']['dependsOn'] = ['sqladmin.googleapis.com']
+		resource['metadata']['dependsOn'] = ['sql-component.googleapis.com']
 
 	return {'resources': [resource]}
