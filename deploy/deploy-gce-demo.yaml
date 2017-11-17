@@ -328,7 +328,7 @@ resources:
       autoscaler:
         min: 1
         max: 5
-        cool: 90
+        cool: 30
         util: .8
         criteria: load_balancer
     - mig-eu:
@@ -341,7 +341,7 @@ resources:
       autoscaler:
         min: 1
         max: 5
-        cool: 90
+        cool: 30
         util: .8
         criteria: load_balancer
     - mig-asia:
@@ -354,7 +354,7 @@ resources:
       autoscaler:
         min: 1
         max: 5
-        cool: 90
+        cool: 30
         util: .8
         criteria: load_balancer
     - mig-transcode:
@@ -367,7 +367,7 @@ resources:
       autoscaler:
         min: 1
         max: 5
-        cool: 120
+        cool: 30
         util: .7
         criteria: cpu
 
@@ -378,7 +378,7 @@ resources:
     - check1:
       name: lms-health-check
       ht: 1
-      uht: 2
+      uht: 1
       timeout: 5
       port: 80
       interval: 5
