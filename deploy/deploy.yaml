@@ -13,8 +13,6 @@
 # limitations under the License.
 
 imports:
-- path: python/enable_apis.py
-  name: enable_apis.py
 - path: python/make_public_buckets.py
   name: make_public_buckets.py
 - path: python/make_custom_network.py
@@ -41,6 +39,8 @@ imports:
   name: make_health_checks.py
 - path: python/make_backend_services.py
   name: make_backend_services.py
+- path: python/make_backend_buckets.py
+  name: make_backend_buckets.py
 - path: python/make_url_maps.py
   name: make_url_maps.py
 - path: python/make_target_proxies.py
@@ -49,20 +49,6 @@ imports:
   name: make_gfrs.py
 
 resources:
-
-# last check on names and stuff
-# squash commits
-# push to master
-# collapse to one repo
-- name: apis
-  type: enable_apis.py
-  properties:
-    billing_account: billingAccounts/009B48-88CB34-9296BE
-    apis:
-      - sql-component.googleapis.com
-      - sqladmin.googleapis.com
-      - pubsub.googleapis.com
-
 - name: buckets
   type: make_public_buckets.py
   properties:
@@ -95,6 +81,8 @@ resources:
     ips:
     - ip1:
       name: lms-demo-ip
+    - ip2:
+      name: gcs-lb-ip
 
 - name: fw-rules
   type: make_fw_rules.py
@@ -115,7 +103,8 @@ resources:
       target_tags:
       - webapp
       source_ranges:
-      - 0.0.0.0/0
+      - 130.211.0.0/22
+      - 35.191.0.0/16
       allowed:
       - p1:
         IPProtocol: TCP
@@ -128,7 +117,6 @@ resources:
   properties:
     topic_names:
     - video_to_transcode
-    wait_for_api: true
 
 - name: subscriptions
   type: make_subscriptions.py
@@ -145,18 +133,17 @@ resources:
 - name: sql_instance
   type: make_sql_instance.py
   properties:
-    name: lms-sql
+    name: <sql_name>
     region: us-central1
     tier: db-n1-standard-1
     activationPolicy: ALWAYS
-    wait_for_api: true
 
 - name: sql_databases
   type: make_databases.py
   properties:
     db_names:
     - lms
-    instance: lms-sql
+    instance: <sql_name>
 
 - name: vms
   type: make_vms.py
@@ -213,13 +200,15 @@ resources:
           cd /
           git clone https://github.com/jwdavis/ce-demo-lms.git
           cd ce-demo-lms
+          git checkout arch_update
           chmod u+x /ce-demo-lms/admin/finish_web_setup.sh
-          /ce-demo-lms/admin/finish_web_setup.sh {} {}
+          /ce-demo-lms/admin/finish_web_setup.sh {} {} {}
           touch /initialized.txt
         fi
       script_args:
       - <sql-pass>
       - <sup-pass>
+      - <sql_name>
     - t2:
       machine-type: n1-standard-1
       network: $(ref.lms-network.selfLink)
@@ -245,13 +234,15 @@ resources:
           cd /
           git clone https://github.com/jwdavis/ce-demo-lms.git
           cd ce-demo-lms
+          git checkout arch_update
           chmod u+x /ce-demo-lms/admin/finish_web_setup.sh
-          /ce-demo-lms/admin/finish_web_setup.sh {} {}
+          /ce-demo-lms/admin/finish_web_setup.sh {} {} {}
           touch /initialized.txt
         fi
       script_args:
       - <sql-pass>
       - <sup-pass>
+      - <sql_name>
     - t3:
       machine-type: n1-standard-1
       network: $(ref.lms-network.selfLink)
@@ -277,13 +268,15 @@ resources:
           cd /
           git clone https://github.com/jwdavis/ce-demo-lms.git
           cd ce-demo-lms
+          git checkout arch_update
           chmod u+x /ce-demo-lms/admin/finish_web_setup.sh
-          /ce-demo-lms/admin/finish_web_setup.sh {} {}
+          /ce-demo-lms/admin/finish_web_setup.sh {} {} {}
           touch /initialized.txt
         fi
       script_args:
       - <sql-pass>
       - <sup-pass>
+      - <sql_name>
     - t4:
       machine-type: n1-standard-1
       network: $(ref.lms-network.selfLink)
@@ -307,6 +300,7 @@ resources:
           cd /
           git clone https://github.com/jwdavis/ce-demo-lms.git
           cd ce-demo-lms
+          git checkout arch_update
           chmod u+x /ce-demo-lms/admin/finish_transcode_setup.sh
           /ce-demo-lms/admin/finish_transcode_setup.sh {}
           touch /initialized.txt
@@ -328,7 +322,7 @@ resources:
       autoscaler:
         min: 1
         max: 5
-        cool: 30
+        cool: 60
         util: .8
         criteria: load_balancer
     - mig-eu:
@@ -341,7 +335,7 @@ resources:
       autoscaler:
         min: 1
         max: 5
-        cool: 30
+        cool: 60
         util: .8
         criteria: load_balancer
     - mig-asia:
@@ -354,7 +348,7 @@ resources:
       autoscaler:
         min: 1
         max: 5
-        cool: 30
+        cool: 60
         util: .8
         criteria: load_balancer
     - mig-transcode:
@@ -367,7 +361,7 @@ resources:
       autoscaler:
         min: 1
         max: 5
-        cool: 30
+        cool: 240
         util: .7
         criteria: cpu
 
@@ -389,6 +383,7 @@ resources:
     backend-services:
     - backend_service-1:
       name: lms-backend-service
+      enableCdn: True
       health-checks:
       - lms-health-check
       backends:
@@ -414,14 +409,35 @@ resources:
         capacityScaler: 1
         group: lms-web-asia
 
+- name: backend-buckets
+  type: make_backend_buckets.py
+  properties:
+    buckets:
+    - videos-bucket:
+      name: videos
+      enableCdn: True
+      bucketName: bdev2_raw_media
+      suffix: True
+
 - name: maps
   type: make_url_maps.py
   properties:
     url_maps:
     - map1:
       name: lms-demo-lb
-      service: lms-backend-service
-
+      default_service: lms-backend-service
+      host_rules:
+      - hosts:
+          - '*'
+        pm: 'pm-1'
+      path_matchers:
+      - pm1:
+        name: pm-1
+        default_service: lms-backend-service
+        path_rules:
+        - paths:
+          - /videos/*
+          service_name: videos
 
 - name: proxies
   type: make_target_proxies.py

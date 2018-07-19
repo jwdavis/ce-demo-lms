@@ -27,7 +27,7 @@ PROJECT_ID = get_metadata("project","project-id")
 SERVER_ZONE = get_metadata("instance","zone").split('/')[3]
 SERVER_NAME = get_metadata("instance","hostname").split('.')[0]
 
-SQL_CONNECTION_NAME = "{}:us-central1:lms-sql=tcp:3306".format(PROJECT_ID)
+SQL_CONNECTION_NAME = "{}:us-central1:<sql_name>=tcp:3306".format(PROJECT_ID)
 SQL_USER = "root"
 SQL_PASSWORD = "<sql_pass>"
 
