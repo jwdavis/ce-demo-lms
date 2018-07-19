@@ -12,10 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# modified by SuccessOps, LLC
+
 from __future__ import absolute_import
 
 import datetime
 import six
+import urllib
 
 from flask import current_app
 from werkzeug import secure_filename
@@ -39,7 +42,7 @@ def _safe_filename(filename):
     in Google Cloud Storage.
     ``filename.ext`` is transformed into ``filename-YYYY-MM-DD-HHMMSS.ext``
     """
-    filename = secure_filename(filename)
+    # filename = secure_filename(filename)
     date = datetime.datetime.utcnow().strftime("%Y-%m-%d-%H%M%S")
     basename, extension = filename.rsplit('.', 1)
     return "{0}-{1}.{2}".format(basename, date, extension)
@@ -61,8 +64,5 @@ def upload_file(file_stream, filename, content_type):
         content_type=content_type)
 
     url = blob.public_url
-
-    if isinstance(url, six.binary_type):
-        url = url.decode('utf-8')
-
+    url = urllib.unquote(url)
     return url

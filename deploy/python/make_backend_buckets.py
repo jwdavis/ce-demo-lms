@@ -11,25 +11,29 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-#from google.cloud import logging
 
 def GenerateConfig(context):
 
-	project = context.env['project']
-	project_number = context.env['project_number']
+  project = context.env['project']
+  resources = []
 
-	resources = []
+  for bucket in context.properties['buckets']:
 
-	for topic_name in context.properties['topic_names']:
-		resource = {
-			'name':	topic_name,
-			'type':	'pubsub.v1.topic',
-			'properties':	{
-				'name': topic_name,
-				'topic': topic_name
-			}
-		}
+    name = bucket['name']
+    if bucket['suffix']:
+      bucketName = '{}_{}'.format(bucket['bucketName'], project)
+    else:
+      bucketName = bucket['bucketName']
+    enableCdn = bucket['enableCdn']
 
-		resources.append(resource)
+    resources.append(
+      {
+        'name': name,
+        'type': 'compute.beta.backendBucket',
+        'properties': {
+          'bucketName': bucketName,
+          'enableCdn': enableCdn
+        }
+      })
 
-	return {'resources': resources}
+  return {'resources': resources}

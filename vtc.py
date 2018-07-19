@@ -57,7 +57,7 @@ while True:
             if object_name != 'q_stuffing':
 
                 # read the file from gcs
-                source_blob = in_bucket.blob(object_name)
+                source_blob = in_bucket.blob('videos/{}'.format(object_name))
                 in_file_name = '{}/in/{}'.format(dir_path,object_name)
                 with open(in_file_name, 'wb') as file_obj:
                     source_blob.download_to_file(file_obj)
@@ -78,7 +78,7 @@ while True:
                 # remove the source file
                 os.system('rm {}'.format(in_file_name))
             else:
-                ('stuffer message for flushing queue')
+                logger('stuffer message for flushing queue')
         except:
             logger('something went wrong')
 
