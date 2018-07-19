@@ -42,7 +42,7 @@ def upload_file(file):
 
     public_url = storage.upload_file(
         file.read(),
-        file.filename,
+        "videos/{}".format(file.filename),
         file.content_type
     )
     return public_url
@@ -77,7 +77,7 @@ def create_module():
         media_url = upload_file(request.files.get('module_media'))
         pieces = media_url.split('/')
         object_name = pieces[len(pieces)-1]
-        pubsub.publish(TOPIC,b'file submitted',object_name)
+        pubsub.publish(TOPIC, b'file submitted', object_name)
         for index in range(0,10):
             pubsub.stuff_queue(TOPIC)
         db = MySQLdb.connect(host="127.0.0.1", user="root", passwd=config.SQL_PASSWORD)
@@ -102,7 +102,7 @@ def show_module(module_id):
         module['description'] = row[1]
         module['media'] = row[2]
         module['row'] = row
-    return render_template('module.html', module=module, instance_metadata=INSTANCE_METADATA)
+    return render_template('module.html', module=module, instance_metadata=INSTANCE_METADATA, bucket=config.CLOUD_STORAGE_BUCKET)
 
 ### paths ###
 # paths list page

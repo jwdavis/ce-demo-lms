@@ -13,7 +13,7 @@ server {
 	client_max_body_size 500M;
 
 	#error_log /var/log/nginx/vc.error.log debug;
-	
+
 	# listen
 	listen 80 default_server;
 
@@ -30,10 +30,5 @@ server {
 	# create location for static files
 	location /static/ {
 		root /ce-demo-lms/;
-	}
-
-	# create location for gcs hosted media files
-	location ~* /gcs/([^/]*)$ {
-		proxy_pass https://storage.googleapis.com/<bucket>/$1;
 	}
 }

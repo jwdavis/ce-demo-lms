@@ -20,7 +20,7 @@ def GenerateConfig(context):
 
   for service in context.properties['backend-services']:
     name = service['name']
-
+    enableCdn = service['enableCdn']
     health_checks = []
     for health_check in service['health-checks']:
       health_checks.append('$(ref.{}.selfLink)'.format(health_check))
@@ -43,6 +43,7 @@ def GenerateConfig(context):
         'properties': {
           'healthChecks': health_checks,
           'protocol': 'HTTP',
+          'enableCDN': enableCdn,
           'backends': backends
         }
       })
