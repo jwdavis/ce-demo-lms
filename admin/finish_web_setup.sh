@@ -10,7 +10,7 @@ python-virtualenv \
 nginx \
 gunicorn \
 python-dev \
-libmysqlclient-dev \
+default-libmysqlclient-dev \
 python-mysqldb \
 supervisor
 
