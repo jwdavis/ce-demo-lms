@@ -43,7 +43,7 @@ def GenerateConfig(context):
             'boot': True,
             'autoDelete': True,
             'initializeParams': {
-                'sourceImage': 'https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/family/debian-8'
+                'sourceImage': 'https://www.googleapis.com/compute/v1/projects/debian-cloud/global/images/debian-9-stretch-v20180814'
               }
           }],
           'metadata': {
