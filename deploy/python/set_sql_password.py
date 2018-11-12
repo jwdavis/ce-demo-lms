@@ -14,19 +14,16 @@
 
 def GenerateConfig(context):
 
-	project = context.env['project']
-	project_number = context.env['project_number']
-	resource = {
-		'name': context.properties['name'],
-		'type': 'sqladmin.v1beta4.instance',
-		'properties': {
-			'name': context.properties['name'],
-			'region': context.properties['region'],
-			'settings':	{
-				'tier':	context.properties['tier'],
-				'activationPolicy':	context.properties['activationPolicy']
-			}
-		}
-	}
+  project = context.env['project']
+  project_number = context.env['project_number']
+  resource = {
+    'name': '{}_root'.format(context.properties['name']),
+    'type': 'sqladmin.v1beta4.user',
+    'properties': {
+      'instance': context.properties['instance'],
+      'password': context.properties['password']
+      }
+    }
+  }
 
-	return {'resources': [resource]}
+  return {'resources': [resource]}

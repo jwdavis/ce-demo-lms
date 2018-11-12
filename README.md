@@ -8,12 +8,15 @@
 1. In Cloud Shell, run the deployment, providing preferred passwords for SQL and Supervisor
 ```
 cd ~
+rm -rf ce-demo-lms
 git clone https://github.com/jwdavis/ce-demo-lms.git
 cd ~/ce-demo-lms/deploy
 . ./start_deployment.sh <sql_pass> <supervisor_pass> <billing_account_id> <sql_instance_name>
 ```
 For example...
 ```
+cd ~
+rm -rf ce-demo-lms
 git clone https://github.com/jwdavis/ce-demo-lms.git
 cd ~/ce-demo-lms/deploy
 . ./start_deployment.sh sql.pass sup.pass 001153-165B33-99FB93 my-sql-instance
