@@ -29,8 +29,6 @@ imports:
   name: make_sql_instance.py
 - path: python/make_databases.py
   name: make_databases.py
-- path: python/set_sql_password.py
-  name: set_sql_password.py
 - path: python/make_vms.py
   name: make_vms.py
 - path: python/make_templates.py
@@ -146,13 +144,6 @@ resources:
     db_names:
     - lms
     instance: <sql_name>
-
-- name: sql_password
-  type: sql_password.py
-  properties:
-    name: root
-    instance: $(ref.<sql_name>.selfLink)
-    password: <sql-pass>
 
 - name: vms
   type: make_vms.py

@@ -26,7 +26,7 @@ fi
 # launch the proxy and run in background
 ~/proxy/cloud_sql_proxy -instances=$DEVSHELL_PROJECT_ID:us-central1:<sql_name>=tcp:3306 &
 
-gcloud beta sql users set-password root % \
+gcloud beta sql users set-password root --host % \
 --instance=<sql_name> \
 --password=$1
 

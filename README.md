@@ -11,7 +11,8 @@ cd ~
 rm -rf ce-demo-lms
 git clone https://github.com/jwdavis/ce-demo-lms.git
 cd ~/ce-demo-lms/deploy
-. ./start_deployment.sh <sql_pass> <supervisor_pass> <billing_account_id> <sql_instance_name>
+suffix=$(date +%Y%m%d%H%M%S)
+. ./start_deployment.sh <sql_pass> <supervisor_pass> <billing_account_id> lms-$suffix
 ```
 For example...
 ```
@@ -19,7 +20,8 @@ cd ~
 rm -rf ce-demo-lms
 git clone https://github.com/jwdavis/ce-demo-lms.git
 cd ~/ce-demo-lms/deploy
-. ./start_deployment.sh sql.pass sup.pass 001153-165B33-99FB93 my-sql-instance
+suffix=$(date +%Y%m%d%H%M%S)
+. ./start_deployment.sh sql.pass sup.pass 001153-165B33-99FB93 lms-$suffix
 ```
 1. Wait a couple minutes for the load balancer to come online. Overall, it'll take 10+ minutes for the entire solution to be demoable.
 1. Open browser pointed at load balancer IP and validate app is running
