@@ -47,3 +47,21 @@ mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.paths (name, description)
 mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.paths (name, description) VALUES ("Master and Commander","Modules for mastering sailing")'
 mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.paths (name, description) VALUES ("Path not taken","Modules for getting lost")'
 mysql -uroot -p$1 --host 127.0.0.1 -e 'INSERT INTO lms.paths (name, description) VALUES ("Off the beaten path","Modules for being alone")'
+
+# get the ip address of the load balancer
+export ip=$(gcloud compute addresses list --format=json | jq '.[] | select(.name=="lms-demo-ip") | .address' | tr -d '"')
+printf "\nLoad Balancing IP address is: $ip\n"
+
+# wait for the load balancer to be live
+printf 'Checking load balancer liveness'
+until $(curl --output /dev/null --silent --head --fail http://$ip); do
+    printf '.'
+    sleep 5
+done
+printf ' load balancer is live!!\n\n'
+
+# print out test commands
+printf "Here are the commands for the typical demo...\n"
+echo "[Test 1] watch -n 1 curl -o /dev/null http://$ip/"
+echo "[Test 2] ab -n 2500 -c 1 -r -l http://$ip/videos/mantas.mp4"
+echo "[Test 3] ab -n 100000 -c 3 -r -l http://$ip/ "
