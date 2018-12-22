@@ -23,8 +23,8 @@ cd ~/ce-demo-lms/deploy
 suffix=$(date +%Y%m%d%H%M%S)
 . ./start_deployment.sh sql.pass sup.pass 001153-165B33-99FB93 lms-$suffix
 ```
-1. Wait a couple minutes for the load balancer to come online. Overall, it'll take 10+ minutes for the entire solution to be demoable.
-1. Open browser pointed at load balancer IP and validate app is running
+1. Wait a couple minutes for the load balancer to come online. The script you run in the Cloud Shell will tell you when the load balacner is available. Overall, it'll take 10+ minutes for the entire solution to be demoable.
+1. Open browser pointed at load balancer IP (this is shown after the setup script has completed) and validate app is running
 
 # Demo instructions
 
@@ -51,13 +51,13 @@ suffix=$(date +%Y%m%d%H%M%S)
 
 ### Stage 5 - show traffic distribution
 1. ssh into test machines in us, europe, asia
-1. generate load from three regions
+1. generate load from three regions (the command customized for your lb IP is shown in cloud shell)
 ```watch -n 1 curl -o /dev/null http://<ip>/```
 1. backend takes 30-60 seconds to refresh; stall
 1. show traffic from origins going to correct backends
 
 ### Stage 6 - show videos serving out of CDN
-1. generate load of video
+1. generate load of video (the command customized for your lb IP is shown in cloud shell)
 ```ab -n 2500 -c 1 http://<ip>/videos/mantas.mp4```
 1. show each vm having similar performance (though videos in us)
 1. show no increase in load on backend service (served from bucket)
@@ -65,7 +65,7 @@ suffix=$(date +%Y%m%d%H%M%S)
 1. There's a beta for large object caching
 
 ### Stage 6 - show autoscaling web app
-1. generate high rps load from each test machine
+1. generate high rps load from each test machine (the command customized for your lb IP is shown in cloud shell)
 ```ab -n 100000 -c 3 -r -l http://<ip>/```
 1. show instance groups changing size
 1. show backend page update
