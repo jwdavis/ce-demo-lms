@@ -22,6 +22,12 @@ def GenerateConfig(context):
   resources = []
 
   for template in context.properties['templates']:
+    metadata = []
+    metadata_dict = template.properties['metadata']
+
+    for item in metadata_dict:
+      metadata.append({'key': item['key'], 'value': item['value']})
+
     resource = {
       'name': template['name'],
       'type': 'compute.v1.instanceTemplate',
@@ -47,10 +53,7 @@ def GenerateConfig(context):
               }
           }],
           'metadata': {
-            'items': [{
-                'key': 'startup-script',
-                'value': template['startup-script'].format(*template['script_args'])
-            }]
+            'items': metadata
           },
           'serviceAccounts': [{
             'email': 'default',

@@ -204,7 +204,7 @@ resources:
           /ce-demo-lms/admin/finish_web_setup.sh {} {} {}
           touch /initialized.txt
         fi
-      script_args:
+      metadata:
       - <sql-pass>
       - <sup-pass>
       - <sql_name>
@@ -237,10 +237,16 @@ resources:
           /ce-demo-lms/admin/finish_web_setup.sh {} {} {}
           touch /initialized.txt
         fi
-      script_args:
-      - <sql-pass>
-      - <sup-pass>
-      - <sql_name>
+      metadata:
+      - sql-pass:
+        key: sql-pass
+        value: <sql-pass>
+      - sup-pass:
+        key: sup-pass
+        value: <sup-pass>
+      - sql-name:
+        key: sql-name
+        value: <sql-name>
     - t3:
       machine-type: n1-standard-1
       network: $(ref.lms-network.selfLink)
@@ -270,7 +276,7 @@ resources:
           /ce-demo-lms/admin/finish_web_setup.sh {} {} {}
           touch /initialized.txt
         fi
-      script_args:
+      metadata:
       - <sql-pass>
       - <sup-pass>
       - <sql_name>

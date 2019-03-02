@@ -23,7 +23,7 @@ cd ~/ce-demo-lms/deploy
 suffix=$(date +%Y%m%d%H%M%S)
 . ./start_deployment.sh sql.pass sup.pass 001153-165B33-99FB93 lms-$suffix
 ```
-1. Wait a couple minutes for the load balancer to come online. The script you run in the Cloud Shell will tell you when the load balacner is available. Overall, it'll take 10+ minutes for the entire solution to be demoable.
+1. Wait a couple minutes for the load balancer to come online. The script you run in the Cloud Shell will tell you when the load balancer is available. Overall, it'll take 10+ minutes for the entire solution to be demoable.
 1. Open browser pointed at load balancer IP (this is shown after the setup script has completed) and validate app is running
 
 # Demo instructions
