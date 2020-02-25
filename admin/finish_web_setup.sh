@@ -21,6 +21,7 @@ source /venvs/lms/bin/activate
 pip install --upgrade pip
 pip install \
 Flask==0.12 \
+werkzeug==0.16.1 \
 gunicorn==19.6.0 \
 mysql-python \
 google-cloud==0.23.0 \
