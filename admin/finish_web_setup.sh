@@ -26,6 +26,7 @@ gunicorn==19.6.0 \
 mysql-python \
 google-cloud==0.23.0 \
 requests
+pip install --upgrade httplib2==0.15.0
 
 # modify config.py
 sed -i -e "s/<sql_pass>/$1/g" /ce-demo-lms/config.py
