@@ -6,38 +6,60 @@
 ### LMS setup
 1. Open GCP Cloud Shell with SDK pointed at demo project
 1. In Cloud Shell, run the deployment, providing preferred passwords for SQL and Supervisor
-```
-cd ~
-rm -rf ce-demo-lms
-git clone https://github.com/jwdavis/ce-demo-lms.git
-cd ~/ce-demo-lms/deploy
-suffix=$(date +%Y%m%d%H%M%S)
-. ./start_deployment.sh <sql_pass> <supervisor_pass> <billing_account_id> lms-$suffix
-```
-For example...
-```
-cd ~
-rm -rf ce-demo-lms
-git clone https://github.com/jwdavis/ce-demo-lms.git
-cd ~/ce-demo-lms/deploy
-suffix=$(date +%Y%m%d%H%M%S)
-. ./start_deployment.sh sql.pass sup.pass 001153-165B33-99FB93 lms-$suffix
-```
-1. Wait a couple minutes for the load balancer to come online. The script you run in the Cloud Shell will tell you when the load balacner is available. Overall, it'll take 10+ minutes for the entire solution to be demoable.
-1. Open browser pointed at load balancer IP (this is shown after the setup script has completed) and validate app is running
+
+    ```bash
+    cd ~
+    rm -rf ce-demo-lms
+    git clone https://github.com/jwdavis/ce-demo-lms.git
+    export TF_VAR_SUP_PASS=<sup_pass>
+    export TF_VAR_SQL_PASS=<sql_pass>
+    export TF_VAR_SQL_SUFFIX=$(date +%Y%m%d%H%M%S)
+    terraform apply -auto-approve
+    ```
+
+    For example...
+
+    ```bash
+    cd ~
+    rm -rf ce-demo-lms
+    git clone https://github.com/jwdavis/ce-demo-lms.git
+    cd ~/ce-demo-lms/deploy
+    export TF_VAR_SUP_PASS=pass
+    export TF_VAR_SQL_PASS=pass
+    export TF_VAR_SQL_SUFFIX=$(date +%Y%m%d%H%M%S)
+    terraform apply -auto-approve
+    ```
+
+1. Installation with take about 20-25 minutes tom complete (Cloud SQL takes a
+   long time to create a primary and 2 read replicas)
+2. Open browser pointed at load balancer IP (this is shown after the setup has
+   completed) and validate app is running
 
 # Demo instructions
 
 ### Stage 1 - Show app
 1. show home page
 1. show modules
-1. show module
-1. show create module - don't actually create module
+1. show a module module with video playing
+2. show create module
 
 ### Stage 2 - Show architecture
 ![Architecture diagram](./arch.png)
 1. walk them through diagram
-1. point out pub/sub is there if you want
+   1. Note that MIGs are autoscaling 1-10
+   2. NGINX servers scale based on LB load
+   3. Transcoding servers scale based on CPU load
+   4. Primary Cloud SQL instance is HA
+   5. There are Cloud SQL read replicas in other regions
+   6. App is written to read from local replica, write to primary
+   7. When video is uploaded, app sends pubsub message to topic
+   8. Transcoding app reads messages about uploads and processes them
+   9. Server speak to Cloud SQL using Cloud SQL Auth Proxy
+2. Optionally, you can call out additional details
+   1. Custom subnet network is created for solution
+   2. Firewall rules only allow HTTP traffic from google LBs and HC
+   3. Cloud SQL Admin API is enabled during setup
+   4. What might you do differently?
 
 ### Stage 3 - Show load balancer
 1. global ip
@@ -51,25 +73,41 @@ suffix=$(date +%Y%m%d%H%M%S)
 
 ### Stage 5 - show traffic distribution
 1. ssh into test machines in us, europe, asia
-1. generate load from three regions (the command customized for your lb IP is shown in cloud shell)
-```watch -n 1 curl -o /dev/null http://<ip>/```
-1. backend takes 30-60 seconds to refresh; stall
-1. show traffic from origins going to correct backends
+2. generate load from three regions (the command customized for your lb IP is
+   shown in cloud shell)
+3. show them what's happening using the lms monitoring page.
+   1. it takes a while for the page to update
+   2. hopefully, it shows traffic from each source going to different backends
+   3. you can click on the **lms-http-lb-backend-lms-web** node and this will
+   show the backends for the backend service, along with RPS rates
+   4. you can click on the purple arrow under the node to show the flow
+      of traffic
+   5. the river chart will strangely show a bunch of video traffic going to
+      various backends. There is no traffic going to /videos, so I have no
+      idea what that's about.
+      
 
 ### Stage 6 - show videos serving out of CDN
-1. generate load of video (the command customized for your lb IP is shown in cloud shell)
-```ab -n 2500 -c 1 http://<ip>/videos/mantas.mp4```
-1. show each vm having similar performance (though videos in us)
-1. show no increase in load on backend service (served from bucket)
-1. You may note that CDN only caches objects <10MB (mantas video is)
-1. There's a beta for large object caching
+1. on each test VM, generate load of video (the command customized for your lb
+   IP is shown in cloud shell)
+2. show each vm having similar performance (though videos are in us)
+4. show the cdn monitoring page to see increase in cdn use
+   1. it takes a while for the page to update
+5. show lms backend service has no traffic
+   1. the videos are being served by bucket and CDN
+6. click on backend bucket in lb monitoring page to show requests there
+8. you may note that CDN only caches objects <10MB (mantas video is)
+9.  there's a beta for large object caching
 
 ### Stage 6 - show autoscaling web app
-1. generate high rps load from each test machine (the command customized for your lb IP is shown in cloud shell)
-```ab -n 100000 -c 3 -r -l http://<ip>/```
-1. show instance groups changing size
-1. show backend page update
-1. watch the test machines to see if ab errors out
+1. on each test VM, generate high rps load from each test machine
+   (the command customized for your lb IP is shown in cloud shell)
+2. show instance groups changing size
+3. in LB monitoring page, click on backend service to show backend details
+4. watch the test machines to see if ab errors out
+5. The river chart will be totally messed up now, with all traffic showing
+   as flowing through the /videos path which is wrong. This is an error
+   in the chart.
 
 ### Optional - show autoscaling transcoding servers
 1. show raw media bucket
@@ -78,10 +116,8 @@ suffix=$(date +%Y%m%d%H%M%S)
 1. backend takes 30-60 seconds to kickoff
 1. show new server spinning up
 1. show cpu utilization in instance group
+   1. this takes a while to update
 
-### Optional - Deployment manager demo
-1. The entire build is handled via DM
-1. Can be fun to start deployment, then show students
-1. The details page for the deployment shows all the dependencies in action
-1. The template and python files gives a good idea of how DM works.
-
+### Optional - IaC demo
+1. The entire build is handled via Terraform
+1. Can be fun to start deployment, then show students some of how it works

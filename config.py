@@ -15,22 +15,22 @@
 import os
 import requests
 
-def get_metadata(scope,key):
+def get_metadata(scope, key):
 	if not os.environ.get('dev'):
-		print 'http://metadata/computeMetadata/v1/{}/{}'.format(scope,key)
 		headers = {"Metadata-Flavor":"Google"}
-		return requests.get('http://metadata/computeMetadata/v1/{}/{}'.format(scope,key), headers=headers).content
+		data = requests.get('http://metadata/computeMetadata/v1/{}/{}'.format(scope, key), headers=headers).content.decode()
+		return data
 	else:
 		return os.environ.get(key)
 
-PROJECT_ID = get_metadata("project","project-id")
-SERVER_ZONE = get_metadata("instance","zone").split('/')[3]
-SERVER_NAME = get_metadata("instance","hostname").split('.')[0]
-
-SQL_CONNECTION_NAME = "{}:us-central1:<sql_name>=tcp:3306".format(PROJECT_ID)
+PROJECT_ID = get_metadata("project", "project-id")
+SERVER_ZONE = get_metadata("instance", "zone").split('/')[3]
+SERVER_REGION = SERVER_ZONE[0:-2]
+SERVER_NAME = get_metadata("instance", "hostname").split('.')[0]
 SQL_USER = "root"
-SQL_PASSWORD = "<sql_pass>"
-
+SQL_PASSWORD = get_metadata("instance", "attributes/SQL_PASS")
+SQL_WRITE_INSTANCE = get_metadata("instance", "attributes/SQL_MAIN")
+SQL_READ_INSTANCE = get_metadata("instance", "attributes/SQL_REPLICA")
 CLOUD_STORAGE_BUCKET = "bdev2_raw_media_{}".format(PROJECT_ID)
 SOURCE_STORAGE_BUCKET = "bdev2_raw_media_{}".format(PROJECT_ID)
 TARGET_STORAGE_BUCKET = "bdev2_media_{}".format(PROJECT_ID)
