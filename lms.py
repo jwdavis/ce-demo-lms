@@ -15,19 +15,28 @@
 from flask import Flask
 from flask import request, redirect, render_template, url_for
 from flask import Response
+from google.cloud import storage, pubsub_v1
 
 import MySQLdb
 import os
-import storage
 import config
-import pubsub
 
 app = Flask(__name__)
-app.config['PROJECT_ID'] = config.PROJECT_ID
-app.config['CLOUD_STORAGE_BUCKET'] = config.CLOUD_STORAGE_BUCKET
 app.config['DEBUG'] = True
-INSTANCE_METADATA = {"zone":config.SERVER_ZONE,"name":config.SERVER_NAME}
-TOPIC = "video_to_transcode"
+
+INSTANCE_METADATA = {"zone":config.SERVER_ZONE, "name":config.SERVER_NAME}
+TOPIC = "projects/{}/topics/videos".format(config.PROJECT_ID)
+
+publisher = pubsub_v1.PublisherClient(
+    batch_settings = pubsub_v1.types.BatchSettings(max_messages=1)
+)
+storage_client = storage.Client()
+bucket = storage_client.bucket(config.CLOUD_STORAGE_BUCKET)
+
+
+def get_read_replica (region):
+    if region == "us-west1":
+        return 
 
 # home page
 @app.route('/')
@@ -40,17 +49,17 @@ def upload_file(file):
     if not file:
         return None
 
-    public_url = storage.upload_file(
+    blob = bucket.blob("videos/{}".format(file.filename))
+    blob.upload_from_string(
         file.read(),
-        "videos/{}".format(file.filename),
-        file.content_type
+        content_type=file.content_type
     )
-    return public_url
+    return blob.public_url
 
 # module list page
 @app.route('/modules')
 def show_modules():
-    db = MySQLdb.connect(host="127.0.0.1", user="root", passwd=config.SQL_PASSWORD)
+    db = MySQLdb.connect(host="127.0.0.1", user="lms-app", port=33060, passwd=config.SQL_PASSWORD)
     cur = db.cursor()
     cur.execute('SELECT id, name, description FROM lms.modules')
     rows = cur.fetchall()
@@ -63,11 +72,6 @@ def show_modules():
         modules.append(row_obj)
     return render_template('modules.html', modules=modules, instance_metadata=INSTANCE_METADATA)
 
-# add new module
-@app.route('/messages/send', methods=['GET'])
-def send_message():
-    pubsub.publish(TOPIC,b'file submitted','ch1.mp4')
-    return 'message sent'
 
 # add new module
 @app.route('/module/add', methods=['GET','POST'])
@@ -77,10 +81,8 @@ def create_module():
         media_url = upload_file(request.files.get('module_media'))
         pieces = media_url.split('/')
         object_name = pieces[len(pieces)-1]
-        pubsub.publish(TOPIC, b'file submitted', object_name)
-        for index in range(0,10):
-            pubsub.stuff_queue(TOPIC)
-        db = MySQLdb.connect(host="127.0.0.1", user="root", passwd=config.SQL_PASSWORD)
+        publisher.publish(TOPIC, object_name.encode('utf=8'))
+        db = MySQLdb.connect(host="127.0.0.1", user="lms-app", passwd=config.SQL_PASSWORD)
         cur = db.cursor()
         cur.execute('INSERT INTO lms.modules (name, description, content, media) VALUES ("{}","{}","{}","{}")'.format(data['title'],data['description'],data['author'],object_name))
         db.commit()
@@ -91,7 +93,7 @@ def create_module():
 # show module page
 @app.route('/module/<module_id>')
 def show_module(module_id):
-    db = MySQLdb.connect(host="127.0.0.1", user="root", passwd=config.SQL_PASSWORD)
+    db = MySQLdb.connect(host="127.0.0.1", user="lms-app", port=33060, passwd=config.SQL_PASSWORD)
     cur = db.cursor()
     cur.execute('SELECT name, description, media  FROM lms.modules WHERE id={}'.format(module_id))
     rows = cur.fetchall()
@@ -108,7 +110,7 @@ def show_module(module_id):
 # paths list page
 @app.route('/paths')
 def show_paths():
-    db = MySQLdb.connect(host="127.0.0.1", user="root", passwd=config.SQL_PASSWORD)
+    db = MySQLdb.connect(host="127.0.0.1", user="lms-app", port=33060, passwd=config.SQL_PASSWORD)
     cur = db.cursor()
     cur.execute('SELECT id, name, description FROM lms.paths')
     rows = cur.fetchall()
