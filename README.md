@@ -25,6 +25,7 @@
    gcloud iam service-accounts keys create ./terraform.json \
       --iam-account=lms-demo-sa@$DEVSHELL_PROJECT_ID.iam.gserviceaccount.com
    
+   terraform init
    terraform apply -auto-approve
    ```
 
@@ -129,6 +130,6 @@
    terraform destroy && \
       cd ~ && \
       rm -rf ~/ce-demo-lms && \
-      gcloud iam service-accounts delete lms-demo-sa --quiet
+      gcloud iam service-accounts delete @$DEVSHELL_PROJECT_ID.iam.gserviceaccount.com --quiet
    ```
 

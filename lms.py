@@ -72,7 +72,6 @@ def show_modules():
         modules.append(row_obj)
     return render_template('modules.html', modules=modules, instance_metadata=INSTANCE_METADATA)
 
-
 # add new module
 @app.route('/module/add', methods=['GET','POST'])
 def create_module():
@@ -82,7 +81,7 @@ def create_module():
         pieces = media_url.split('/')
         object_name = pieces[len(pieces)-1]
         publisher.publish(TOPIC, object_name.encode('utf=8'))
-        db = MySQLdb.connect(host="127.0.0.1", user="lms-app", passwd=config.SQL_PASSWORD)
+        db = MySQLdb.connect(host="127.0.0.1", user="lms-app", port=3306, passwd=config.SQL_PASSWORD)
         cur = db.cursor()
         cur.execute('INSERT INTO lms.modules (name, description, content, media) VALUES ("{}","{}","{}","{}")'.format(data['title'],data['description'],data['author'],object_name))
         db.commit()
