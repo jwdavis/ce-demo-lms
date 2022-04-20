@@ -16,5 +16,6 @@ override.tf
 override.tf.json
 *_override.tf
 *_override.tf.json
+terraform.json
 
 .DS_Store

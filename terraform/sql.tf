@@ -55,12 +55,14 @@ resource "null_resource" "sql_init" {
       uname -a | grep 'Darwin' &> /dev/null
       if [ $? == 0 ]; then
         kill $(lsof -t -i:3306)
+        os="mac"
       else
         fuser -k 3306/tcp
+        os="other"
       fi
 
       ~/proxy/cloud_sql_proxy -instances=${var.project}:${var.sql_init_scripts[count.index]["region"]}:${local.sql_instances[var.sql_init_scripts[count.index]["instance"]]}=tcp:3306 &
-      sleep 2
+      sleep 10
 
       # create the tables
       mysql -ulms-app -p${var.SQL_PASS} --host 127.0.0.1 -e "CREATE TABLE lms.users (id INT NOT NULL AUTO_INCREMENT PRIMARY KEY, email TINYTEXT, name TINYTEXT, title TINYTEXT);"
@@ -81,7 +83,7 @@ resource "null_resource" "sql_init" {
       mysql -ulms-app -p${var.SQL_PASS} --host 127.0.0.1 -e 'INSERT INTO lms.paths (name, description) VALUES ("Off the beaten path","Modules for being alone")'
 
       # kill the proxy
-      if [ $? == 0 ]; then
+      if [ $os == "mac" ]; then
         kill $(lsof -t -i:3306)
       else
         fuser -k 3306/tcp
