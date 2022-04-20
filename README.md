@@ -131,3 +131,4 @@
       rm -rf ~/ce-demo-lms && \
       gcloud iam service-accounts delete lms-demo-sa --quiet
    ```
+
