@@ -18,12 +18,13 @@
    export TF_VAR_SQL_PASS=<sql_pass>
    export TF_VAR_SQL_SUFFIX=$(date +%Y%m%d%H%M%S)
 
+   export PROJECT_ID=$(gcloud config get-value project)
    gcloud iam service-accounts create lms-demo-sa
-   gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID \
-      --member="serviceAccount:lms-demo-sa@$DEVSHELL_PROJECT_ID.iam.gserviceaccount.com" \
+   gcloud projects add-iam-policy-binding $PROJECT_ID \
+      --member="serviceAccount:lms-demo-sa@$PROJECT_ID.iam.gserviceaccount.com" \
       --role='roles/editor'
    gcloud iam service-accounts keys create ./terraform.json \
-      --iam-account=lms-demo-sa@$DEVSHELL_PROJECT_ID.iam.gserviceaccount.com
+      --iam-account=lms-demo-sa@$PROJECT_ID.iam.gserviceaccount.com
    
    terraform init
    terraform apply -auto-approve
@@ -130,6 +131,7 @@
    terraform destroy && \
       cd ~ && \
       rm -rf ~/ce-demo-lms && \
-      gcloud iam service-accounts delete @$DEVSHELL_PROJECT_ID.iam.gserviceaccount.com --quiet
+      export PROJECT_ID=$(gcloud config get-value project) && \
+      gcloud iam service-accounts delete lms-demo-sa@$PROJECT_ID.iam.gserviceaccount.com --quiet
    ```
 
