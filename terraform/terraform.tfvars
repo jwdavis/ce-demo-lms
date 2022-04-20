@@ -1,4 +1,4 @@
-credentials_file = "~/Desktop/Dev/terraform.json"
+credentials_file = "./terraform.json"
 project          = "jwd-gcp-demos"
 
 networks = [

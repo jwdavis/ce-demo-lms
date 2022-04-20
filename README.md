@@ -5,34 +5,32 @@
 
 ### LMS setup
 1. Open GCP Cloud Shell with SDK pointed at demo project
-1. In Cloud Shell, run the deployment, providing preferred passwords for SQL and Supervisor
+1. In Cloud Shell, run the deployment, providing preferred passwords for SQL
+   and Supervisor (replace the values in <>)
 
-    ```bash
-    cd ~
-    rm -rf ce-demo-lms
-    git clone https://github.com/jwdavis/ce-demo-lms.git
-    export TF_VAR_SUP_PASS=<sup_pass>
-    export TF_VAR_SQL_PASS=<sql_pass>
-    export TF_VAR_SQL_SUFFIX=$(date +%Y%m%d%H%M%S)
-    terraform apply -auto-approve
-    ```
+   ```bash
+   cd ~
+   rm -rf ce-demo-lms
+   git clone https://github.com/jwdavis/ce-demo-lms.git
+   cd ~/ce-demo-lms/terraform
 
-    For example...
+   export TF_VAR_SUP_PASS=<sup_pass>
+   export TF_VAR_SQL_PASS=<sql_pass>
+   export TF_VAR_SQL_SUFFIX=$(date +%Y%m%d%H%M%S)
 
-    ```bash
-    cd ~
-    rm -rf ce-demo-lms
-    git clone https://github.com/jwdavis/ce-demo-lms.git
-    cd ~/ce-demo-lms/deploy
-    export TF_VAR_SUP_PASS=pass
-    export TF_VAR_SQL_PASS=pass
-    export TF_VAR_SQL_SUFFIX=$(date +%Y%m%d%H%M%S)
-    terraform apply -auto-approve
-    ```
+   gcloud iam service-accounts create lms-demo-sa
+   gcloud projects add-iam-policy-binding $DEVSHELL_PROJECT_ID \
+      --member="serviceAccount:lms-demo-sa@$DEVSHELL_PROJECT_ID.iam.gserviceaccount.com" \
+      --role='roles/editor'
+   gcloud iam service-accounts keys create ./terraform.json \
+      --iam-account=lms-demo-sa@$DEVSHELL_PROJECT_ID.iam.gserviceaccount.com
+   
+   terraform apply -auto-approve
+   ```
 
-1. Installation with take about 20-25 minutes tom complete (Cloud SQL takes a
+2. Installation with take about 20-25 minutes tom complete (Cloud SQL takes a
    long time to create a primary and 2 read replicas)
-2. Open browser pointed at load balancer IP (this is shown after the setup has
+3. Open browser pointed at load balancer IP (this is shown after the setup has
    completed) and validate app is running
 
 # Demo instructions
@@ -121,3 +119,15 @@
 ### Optional - IaC demo
 1. The entire build is handled via Terraform
 1. Can be fun to start deployment, then show students some of how it works
+
+# Cleanup
+
+1. Run the following in Cloud Shell
+
+   ```bash
+   cd ~/ce-demo-lms/terraform 
+   terraform destroy && \
+      cd ~ && \
+      rm -rf ~/ce-demo-lms && \
+      gcloud iam service-accounts delete lms-demo-sa --quiet
+   ```
