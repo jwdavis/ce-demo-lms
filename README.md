@@ -9,6 +9,9 @@
    and Supervisor (replace the values in <>)
 
    ```bash
+   export PROJECT_ID=$(gcloud config get-value project)
+   gcloud services enable sqladmin.googleapis.com --quiet
+
    cd ~
    rm -rf ce-demo-lms
    git clone https://github.com/jwdavis/ce-demo-lms.git
@@ -17,6 +20,7 @@
    export TF_VAR_SUP_PASS=<sup_pass>
    export TF_VAR_SQL_PASS=<sql_pass>
    export TF_VAR_SQL_SUFFIX=$(date +%Y%m%d%H%M%S)
+   export TF_VAR_project=$PROJECT_ID
 
    export PROJECT_ID=$(gcloud config get-value project)
    gcloud iam service-accounts create lms-demo-sa

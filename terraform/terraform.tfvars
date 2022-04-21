@@ -1,5 +1,4 @@
 credentials_file = "./terraform.json"
-project          = "jwd-gcp-demos"
 
 networks = [
   { "name" : "lms-network", "auto" : false }
@@ -37,39 +36,6 @@ firewalls = [
     "target_tags" : ["webapp"],
     "network" : "lms-network"
   },
-  {
-    "name" : "lms-from-home",
-    "direction" : "INGRESS",
-    "allow" : {
-      "protocol" : "TCP",
-      "ports" : null
-    },
-    "source_ranges" : ["69.181.203.96"],
-    "target_tags" : null,
-    "network" : "lms-network"
-  },
-  # {
-  #   "name" : "lms-network-test-80",
-  #   "direction" : "INGRESS",
-  #   "allow" : {
-  #     "protocol" : "tcp",
-  #     "ports" : ["80"]
-  #   },
-  #   "source_ranges" : ["192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24"],
-  #   "target_tags" : ["webapp"],
-  #   "network" : "lms-network"
-  # },
-  # {
-  #   "name" : "lms-network-test-icmp",
-  #   "direction" : "INGRESS",
-  #   "allow" : {
-  #     "protocol" : "icmp",
-  #     "ports" : null
-  #   },
-  #   "source_ranges" : ["192.168.1.0/24", "192.168.2.0/24", "192.168.3.0/24"],
-  #   "target_tags" : null,
-  #   "network" : "lms-network"
-  # }
 ]
 
 buckets = [
@@ -426,4 +392,7 @@ sql_init_scripts = [
 
 apis = [
   "sqladmin.googleapis.com",
+  "pubsub.googleapis.com",
+  "compute.googleapis.com",
+  "cloudresourcemanager.googleapis.com"
 ]
