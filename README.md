@@ -6,7 +6,8 @@
 ### LMS setup
 1. Open GCP Cloud Shell with SDK pointed at demo project
 1. In Cloud Shell, run the deployment, providing preferred passwords for SQL
-   and Supervisor (replace the values in <>)
+   and Supervisor (replace the placeholders, including the <>). If you run and
+   see errors about newlines, you forgot to replace the placeholders.
 
    ```bash
    export PROJECT_ID=$(gcloud config get-value project)
@@ -22,7 +23,6 @@
    export TF_VAR_SQL_SUFFIX=$(date +%Y%m%d%H%M%S)
    export TF_VAR_project=$PROJECT_ID
 
-   export PROJECT_ID=$(gcloud config get-value project)
    gcloud iam service-accounts create lms-demo-sa
    gcloud projects add-iam-policy-binding $PROJECT_ID \
       --member="serviceAccount:lms-demo-sa@$PROJECT_ID.iam.gserviceaccount.com" \
@@ -132,6 +132,18 @@
 1. Run the following in Cloud Shell
 
    ```bash
+   # Workaround https://github.com/hashicorp/terraform-provider-google/issues/6782
+    sudo sysctl -w net.ipv6.conf.all.disable_ipv6=1 net.ipv6.conf.default.disable_ipv6=1 net.ipv6.conf.lo.disable_ipv6=1 > /dev/null
+    export APIS="googleapis.com www.googleapis.com storage.googleapis.com iam.googleapis.com cloudresourcemanager.googleapis.com sqladmin.googleapis.com pubsub.googleapis.com compute.googleapis.com"
+    for name in $APIS
+    do
+      ipv4=$(getent ahostsv4 "$name" | head -n 1 | awk '{ print $1 }')
+      grep -q "$name" /etc/hosts || ([ -n "$ipv4" ] && sudo sh -c "echo '$ipv4 $name' >> /etc/hosts")
+    done
+   # Workaround end
+   ```
+
+   ```bash
    cd ~/ce-demo-lms/terraform 
    terraform destroy -auto-approve && \
       cd ~ && \
@@ -140,3 +152,10 @@
       gcloud iam service-accounts delete lms-demo-sa@$PROJECT_ID.iam.gserviceaccount.com --quiet
    ```
 
+2. If you receive an error that looks similar to this
+
+   ```
+   terraform dial tcp [2607:f8b0:400c:c15::80]:443: connect: cannot assign requested address
+   ```
+
+   Just rerun the command; eventually it'll all work. This is a bug in TF and Cloud Shell.
