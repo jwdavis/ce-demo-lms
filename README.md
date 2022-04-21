@@ -6,37 +6,56 @@
 
 ### LMS setup
 1. Open GCP Cloud Shell with SDK pointed at demo project
-1. In Cloud Shell, run the deployment, providing preferred passwords for SQL
-   and Supervisor (replace the placeholders, including the <>). If you run and
-   see errors about newlines, you forgot to replace the placeholders.
+1. Run the following to ensure key services are enabled
 
    ```bash
    export PROJECT_ID=$(gcloud config get-value project)
    gcloud services enable sqladmin.googleapis.com --quiet
+   gcloud services enable pubsub.googleapis.com --quiet
+   gcloud services enable compute.googleapis.com --quiet
+   gcloud services enable cloudresourcemanager.googleapis.com --quiet
+   sleep 60
+   ```
+1. Run the following get get the current version of demo into home directory
 
+   ```bash
    cd ~
    rm -rf ce-demo-lms
    git clone https://github.com/jwdavis/ce-demo-lms.git
    cd ~/ce-demo-lms/terraform
+   ```
 
+1. Run the following to populated some Terraform variables. Make sure to replace
+   the placeholders (including the <>) with real values:
+
+   ```bash
    export TF_VAR_SUP_PASS=<sup_pass>
    export TF_VAR_SQL_PASS=<sql_pass>
    export TF_VAR_SQL_SUFFIX=$(date +%Y%m%d%H%M%S)
    export TF_VAR_project=$PROJECT_ID
+   ```
 
+1. Run the following to create a service account for TF to use:
+
+   ```bash
    gcloud iam service-accounts create lms-demo-sa
    gcloud projects add-iam-policy-binding $PROJECT_ID \
       --member="serviceAccount:lms-demo-sa@$PROJECT_ID.iam.gserviceaccount.com" \
       --role='roles/editor'
    gcloud iam service-accounts keys create ./terraform.json \
       --iam-account=lms-demo-sa@$PROJECT_ID.iam.gserviceaccount.com
+   ```
+
+1. Run the following to do the Terraform build:
    
+   ```bash
    terraform init
    terraform apply -auto-approve
    ```
 
 2. Installation with take about 20-25 minutes tom complete (Cloud SQL takes a
-   long time to create a primary and 2 read replicas)
+   long time to create a primary and 2 read replicas). Also, after TF shows
+   it's down, it may still take 5+ minutes for the load balancer to settle down
 3. Open browser pointed at load balancer IP (this is shown after the setup has
    completed) and validate app is running
 
