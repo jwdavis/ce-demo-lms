@@ -1,7 +1,8 @@
 # Setup
 
 ### Project
-1. Create a project to contain resources used in this demo
+1. Create a project to contain resources used in this demo, or re-use one
+   that you've used previously.
 
 ### LMS setup
 1. Open GCP Cloud Shell with SDK pointed at demo project
