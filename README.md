@@ -16,6 +16,11 @@
    gcloud services enable cloudresourcemanager.googleapis.com --quiet
    sleep 60
    ```
+
+   This will take 5-8 minutes to complete. The `sleep` at the end is meant
+   to avoid timing problems where the APIs won't respond immediately after
+   being enabled.
+
 1. Run the following get get the current version of demo into home directory
 
    ```bash
@@ -53,7 +58,7 @@
    terraform apply -auto-approve
    ```
 
-2. Installation with take about 20-25 minutes tom complete (Cloud SQL takes a
+2. Installation with take about 20 minutes to complete (Cloud SQL takes a
    long time to create a primary and 2 read replicas). Also, after TF shows
    it's down, it may still take 5+ minutes for the load balancer to settle down
 3. Open browser pointed at load balancer IP (this is shown after the setup has
