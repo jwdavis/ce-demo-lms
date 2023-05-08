@@ -40,28 +40,17 @@
    export TF_VAR_project=$PROJECT_ID
    ```
 
-1. Run the following to create a service account for TF to use:
-
-   ```bash
-   gcloud iam service-accounts create lms-demo-sa
-   gcloud projects add-iam-policy-binding $PROJECT_ID \
-      --member="serviceAccount:lms-demo-sa@$PROJECT_ID.iam.gserviceaccount.com" \
-      --role='roles/editor'
-   gcloud iam service-accounts keys create ./terraform.json \
-      --iam-account=lms-demo-sa@$PROJECT_ID.iam.gserviceaccount.com
-   ```
-
-1. Run the following to do the Terraform build:
+2. Run the following to do the Terraform build:
    
    ```bash
    terraform init
    terraform apply -auto-approve
    ```
 
-2. Installation with take about 20 minutes to complete (Cloud SQL takes a
+3. Installation with take about 20 minutes to complete (Cloud SQL takes a
    long time to create a primary and 2 read replicas). Also, after TF shows
    it's down, it may still take 5+ minutes for the load balancer to settle down
-3. Open browser pointed at load balancer IP (this is shown after the setup has
+4. Open browser pointed at load balancer IP (this is shown after the setup has
    completed) and validate app is running
 
 # Demo instructions
@@ -167,7 +156,6 @@
       cd ~ && \
       rm -rf ~/ce-demo-lms && \
       export PROJECT_ID=$(gcloud config get-value project) && \
-      gcloud iam service-accounts delete lms-demo-sa@$PROJECT_ID.iam.gserviceaccount.com --quiet
    ```
 
 2. If you receive an error that looks similar to this
