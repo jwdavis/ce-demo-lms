@@ -75,8 +75,8 @@ module "gce-lb-https" {
           max_connections              = null
           max_connections_per_instance = null
           max_connections_per_endpoint = null
-          max_rate                     = 30
-          max_rate_per_instance        = null
+          max_rate                     = null
+          max_rate_per_instance        = 30
           max_rate_per_endpoint        = null
           max_utilization              = null
         },
