@@ -21,7 +21,7 @@ resource "google_sql_database_instance" "sql_instances" {
       enabled                        = true
       start_time                     = null
       location                       = null
-      transaction_log_retention_days = null
+      transaction_log_retention_days = 5
       backup_retention_settings {
         retained_backups = 5
         retention_unit   = "COUNT"

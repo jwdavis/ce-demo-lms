@@ -100,24 +100,17 @@
 1. show the three web and one transcode
 1. show autoscaling setup
 
-### Stage 5 - show traffic distribution
-1. ssh into test machines in us, europe, asia
+### Stage 5 - Show traffic distribution
+1. sSSHsh into test machines in us, europe, asia
 2. generate load from three regions (the command customized for your lb IP is
    shown in cloud shell)
 3. show them what's happening using the LB monitoring page.
    1. it takes a while for the page to update
    2. hopefully, it shows traffic from each source going to different backends
-   3. you can click on the **lms-http-lb-backend-lms-web** node and this will
-   show the backends for the backend service, along with RPS rates
-   4. you can click on the purple arrow under the node to show the flow
-      of traffic
-   5. the river chart will strangely show a bunch of video traffic going to
-      various backends. There is no traffic going to /videos, so I have no
-      idea what that's about.
 4. Google Cloud Monitoring dashboard for load balancing can also be fun
 5. Google Cloud Monitoring dashboard for Cloud SQL can be fun
 
-### Stage 6 - show videos serving out of CDN
+### Stage 6 - Show videos serving out of CDN
 1. on each test VM, generate load of video (the command customized for your lb
    IP is shown in cloud shell)
 2. show each vm having similar performance (though videos are in us)
@@ -129,7 +122,7 @@
 8. you may note that CDN only caches objects <10MB (mantas video is)
 9.  there's a beta for large object caching
 
-### Stage 7 - show autoscaling web app
+### Stage 7 - Show autoscaling web app
 1. on each test VM, generate high rps load from each test machine
    (the command customized for your lb IP is shown in cloud shell)
 2. show instance groups changing size
@@ -139,7 +132,7 @@
    as flowing through the /videos path which is wrong. This is an error
    in the chart.
 
-### Optional - show autoscaling transcoding servers
+### Optional - Show autoscaling transcoding servers
 1. show raw media bucket
 1. show transcoded media bucket
 1. create module with video
