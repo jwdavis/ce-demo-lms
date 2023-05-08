@@ -56,10 +56,10 @@
 # Demo instructions
 
 ### Stage 1 - Show app
-1. show home page
-1. show modules
-1. show a module module with video playing
-2. show create module
+1. Show home page
+1. Show modules
+1. Show a module module with video playing
+2. Show create module
 
 ### Stage 2 - Show architecture
 ![Architecture diagram](./arch.png)
