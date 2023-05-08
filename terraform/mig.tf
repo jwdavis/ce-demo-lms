@@ -51,6 +51,10 @@ resource "google_compute_instance_group_manager" "instance_groups" {
   zone               = var.instance_groups[count.index]["zone"]
   base_instance_name = var.instance_groups[count.index]["base"]
   wait_for_instances = var.instance_groups[count.index]["wait"]
+  named_port {
+    name = "http"
+    port = 80
+  }
   version {
     instance_template = local.template_ids[var.instance_groups[count.index]["template"]]
   }
